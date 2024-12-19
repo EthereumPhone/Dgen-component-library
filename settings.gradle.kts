@@ -15,4 +15,4 @@ dependencyResolutionManagement {
 
 rootProject.name = "Dgen-component-library"
 include(":app")
-include(":library")
+include(":dgenlibrary")
