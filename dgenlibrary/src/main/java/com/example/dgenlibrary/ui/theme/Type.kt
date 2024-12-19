@@ -10,25 +10,26 @@ import androidx.compose.ui.unit.sp
 import com.example.dgenlibrary.R
 
 val SourceSansProFamily = FontFamily(
-    Font(R.font., FontWeight.Light),
-    Font(R.font.firasans_regular, FontWeight.Normal),
-    Font(R.font.firasans_italic, FontWeight.Normal, FontStyle.Italic),
-    Font(R.font.firasans_medium, FontWeight.Medium),
-    Font(R.font.firasans_bold, FontWeight.Bold)
+    Font(R.font.sourcesans3_light, FontWeight.Light),
+    Font(R.font.sourcesans3_regular, FontWeight.Normal),
+    Font(R.font.sourcesans3_italic, FontWeight.Normal, FontStyle.Italic),
+    Font(R.font.sourcesans3_medium, FontWeight.Medium),
+    Font(R.font.sourcesans3_semibold, FontWeight.SemiBold),
+    Font(R.font.sourcesans3_bold, FontWeight.Bold)
 )
 
-val MyTypography = Typography(
-    bodyMedium = TextStyle(
-        fontFamily = fontFamily, fontWeight = FontWeight.Normal, fontSize = 12.sp/*...*/
-    ),
-    bodyLarge = TextStyle(
-        fontFamily = fontFamily,
-        fontWeight = FontWeight.Bold,
-        letterSpacing = 2.sp,
-        /*...*/
-    ),
-    headlineMedium = TextStyle(
-        fontFamily = fontFamily, fontWeight = FontWeight.SemiBold/*...*/
-    ),
-    /*...*/
-)
+//val DgenTypography = Typography(
+//    bodyMedium = TextStyle(
+//        fontFamily = fontFamily, fontWeight = FontWeight.Normal, fontSize = 12.sp/*...*/
+//    ),
+//    bodyLarge = TextStyle(
+//        fontFamily = fontFamily,
+//        fontWeight = FontWeight.Bold,
+//        letterSpacing = 2.sp,
+//        /*...*/
+//    ),
+//    headlineMedium = TextStyle(
+//        fontFamily = fontFamily, fontWeight = FontWeight.SemiBold/*...*/
+//    ),
+//    /*...*/
+//)
