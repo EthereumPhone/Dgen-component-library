@@ -77,6 +77,8 @@ class MainActivity : ComponentActivity() {
                     val translateContent: Dp by animateDpAsState(if (drawerState) 200.dp else 0.dp, label = "translateContent")
                     val translateList: Dp by animateDpAsState(if (drawerState) 0.dp else 200.dp, label = "translateList")
 
+                    var selectedIndices by remember { mutableStateOf(setOf<Int>()) }
+
                     val items by remember {
                         mutableStateOf(
                             (1..20).map {
@@ -104,7 +106,14 @@ class MainActivity : ComponentActivity() {
                         verticalArrangement = Arrangement.Center,
                         horizontalAlignment = Alignment.CenterHorizontally
                     ) {
-                        Text("Selected Option: ${selectedItem?.name ?: "None"}")
+                        val selectedItemNames = selectedIndices.map { idx -> items[idx].name }
+                        val displayedNames = selectedItemNames.joinToString(", ")
+                        Text(
+                            text = "Selected items: $displayedNames",
+                            color = Color.White
+                        )
+
+                        //Text("Selected Option: ${selectedItem?.name ?: "None"}")
                         Button(onClick = {
                             //navigation.navigate("SecondScreen")
                             drawerState = !drawerState
@@ -118,9 +127,11 @@ class MainActivity : ComponentActivity() {
                             //this.translationX = 0.dp.toPx() // -open
                         },
                         items = items,
-                        onItemSelected = { item ->
-                            selectedItem = item  // Keep track of which item was clicked last
-                        }
+                        selectedIndices = selectedIndices,
+                        onSelectionChanged = { newSelection ->
+                            selectedIndices = newSelection
+                        },
+                        selectionLimit = 2  // or whatever limit you want
                     )
                     //SecondScreen()
                 }
@@ -135,7 +146,9 @@ class MainActivity : ComponentActivity() {
 fun List(
     modifier: Modifier = Modifier,
     items: List<ItemData>,
-    onItemSelected: (ItemData?) -> Unit
+    selectedIndices: Set<Int>,
+    onSelectionChanged: (Set<Int>) -> Unit,
+    selectionLimit: Int = 3
 ) {
     var selectedIndex by remember { mutableStateOf(-1) }
 
@@ -146,13 +159,23 @@ fun List(
             .background(Color.Red)
     ) {
         itemsIndexed(items) { index, item ->
-            val isSelected = (index == selectedIndex)
+            val isSelected = index in selectedIndices
+
+            // We pass isSelected (derived from parent state) to the UI
             CustomListItem(
                 item = item.copy(isSelected = isSelected),
                 onClick = {
-                    // If the same item is clicked, unselect it; otherwise select it
-                    selectedIndex = if (isSelected) -1 else index
-                    onItemSelected(if (selectedIndex == -1) null else item)
+                    if (isSelected) {
+                        // Toggle off
+                        onSelectionChanged(selectedIndices - index)
+                    } else {
+                        // Check limit before adding
+                        if (selectedIndices.size < selectionLimit) {
+                            onSelectionChanged(selectedIndices + index)
+                        } else {
+                            // Reached limit - do nothing, or handle differently
+                        }
+                    }
                 }
             )
         }
