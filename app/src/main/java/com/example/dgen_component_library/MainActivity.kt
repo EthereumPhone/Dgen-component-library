@@ -44,6 +44,7 @@ import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
+import androidx.compose.runtime.snapshots.SnapshotStateList
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -106,10 +107,30 @@ class MainActivity : ComponentActivity() {
                         verticalArrangement = Arrangement.Center,
                         horizontalAlignment = Alignment.CenterHorizontally
                     ) {
-                        val selectedItemNames = selectedIndices.map { idx -> items[idx].name }
-                        val displayedNames = selectedItemNames.joinToString(", ")
+//                        val selectedItemNames = selectedIndices.map { idx -> items[idx].name }
+//                        val displayedNames = selectedItemNames.joinToString(", ")
+
+
+                        val firstIndex = selectedIndices.elementAtOrNull(0)
+                        val secondIndex = selectedIndices.elementAtOrNull(1)
+                        val selectedItem1 = if(firstIndex != null) items[firstIndex].name else "Default1" //selectedIndices.elementAt(1)
+                        val selectedItem2 = if(secondIndex != null) items[secondIndex].name else "Default2"
+
                         Text(
-                            text = "Selected items: $displayedNames",
+                            text = "Items 1: $selectedItem1",
+                            color = Color.White
+                        )
+
+                        //Text("Selected Option: ${selectedItem?.name ?: "None"}")
+                        Button(onClick = {
+                            //navigation.navigate("SecondScreen")
+                            drawerState = !drawerState
+                        }) {
+                            Text("Go to second screen")
+                        }
+
+                        Text(
+                            text = "Items 2: $selectedItem2",
                             color = Color.White
                         )
 
@@ -121,6 +142,9 @@ class MainActivity : ComponentActivity() {
                             Text("Go to second screen")
                         }
                     }
+
+
+
                     List(
                         modifier = Modifier.graphicsLayer {
                             this.translationX = translateList.toPx() // closed
@@ -130,6 +154,7 @@ class MainActivity : ComponentActivity() {
                         selectedIndices = selectedIndices,
                         onSelectionChanged = { newSelection ->
                             selectedIndices = newSelection
+
                         },
                         selectionLimit = 2  // or whatever limit you want
                     )
@@ -146,11 +171,9 @@ class MainActivity : ComponentActivity() {
 fun List(
     modifier: Modifier = Modifier,
     items: List<ItemData>,
-    selectedIndices: Set<Int>,
-    onSelectionChanged: (Set<Int>) -> Unit,
-    selectionLimit: Int = 3
+    selectedIndicesList: SnapshotStateList<Int>, // pass in the parent's list
+    maxSelection: Int = 2
 ) {
-    var selectedIndex by remember { mutableStateOf(-1) }
 
     LazyColumn(
         modifier = modifier
@@ -159,21 +182,35 @@ fun List(
             .background(Color.Red)
     ) {
         itemsIndexed(items) { index, item ->
-            val isSelected = index in selectedIndices
+            val isSelected = index in selectedIndicesList
 
-            // We pass isSelected (derived from parent state) to the UI
             CustomListItem(
                 item = item.copy(isSelected = isSelected),
                 onClick = {
                     if (isSelected) {
-                        // Toggle off
-                        onSelectionChanged(selectedIndices - index)
-                    } else {
-                        // Check limit before adding
-                        if (selectedIndices.size < selectionLimit) {
-                            onSelectionChanged(selectedIndices + index)
+                        // Tapping an already-selected item
+                        if (selectedIndicesList.size == maxSelection) {
+                            // Swap positions if exactly 2 are selected:
+                            // 1) Remove the tapped index
+                            selectedIndicesList.remove(index)
+                            // 2) Insert it at the front (position 0),
+                            //    effectively "switching" the two.
+                            selectedIndicesList.add(0, index)
                         } else {
-                            // Reached limit - do nothing, or handle differently
+                            // If there's only 1 item selected,
+                            // tapping it again just unselects it
+                            selectedIndicesList.remove(index)
+                        }
+                    } else {
+                        // Selecting a new item
+                        if (selectedIndicesList.size < maxSelection) {
+                            // Room available, just add
+                            selectedIndicesList.add(index)
+                        } else {
+                            // Already 2 selected, remove the "oldest" (at index 0)
+                            selectedIndicesList.removeAt(0)
+                            // Add the new item
+                            selectedIndicesList.add(index)
                         }
                     }
                 }
