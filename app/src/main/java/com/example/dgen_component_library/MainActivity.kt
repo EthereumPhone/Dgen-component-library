@@ -69,244 +69,124 @@ class MainActivity : ComponentActivity() {
         super.onCreate(savedInstanceState)
         setContent {
             DgenTheme {
-                Box(contentAlignment = Alignment.TopEnd){
-                    var drawerState by remember {
-                        mutableStateOf(false)
-                    }
+//                Box(contentAlignment = Alignment.TopEnd){
+//                    var drawerState by remember {
+//                        mutableStateOf(false)
+//                    }
+//
+//                    val translateContent: Dp by animateDpAsState(if (drawerState) 200.dp else 0.dp, label = "translateContent")
+//                    val translateList: Dp by animateDpAsState(if (drawerState) 0.dp else 200.dp, label = "translateList")
+//
+//                    // --- Changed from a Set<Int> to a mutable list for order-based swapping ---
+//                    val selectedIndicesList = remember { mutableStateListOf<Int>() }
+//                    var activeSlot by remember { mutableStateOf<Int?>(null) }
+//
+//                    val items by remember {
+//                        mutableStateOf(
+//                            (1..20).map {
+//                                val rnd = Random.nextDouble(0.0,100.0)
+//                                ItemData(
+//                                    name = "name $it",
+//                                    desc = "-name-",
+//                                    value = String.format("%.2f",rnd),
+//                                    isSelected = false
+//                                )
+//
+//                            }
+//                        )
+//                    }
+//
+//                    var dropdownModifer = when(drawerState){
+//                        true -> {
+//                            Modifier
+//                                .fillMaxWidth()
+//                                .fillMaxHeight()
+//                                .background(Color.Blue)
+//                                .graphicsLayer {
+//                                    //this.translationX = -200.dp.toPx() // open
+//                                    this.translationX = -translateContent.toPx() //closed
+//                                }
+//                                .clickable {
+//                                    if (drawerState) {
+//                                        drawerState = false
+//                                    }
+//                                }
+//                        }
+//                        false -> {
+//                            Modifier
+//                                .fillMaxWidth()
+//                                .fillMaxHeight()
+//                                .background(Color.Blue)
+//                                .graphicsLayer {
+//                                    //this.translationX = -200.dp.toPx() // open
+//                                    this.translationX = -translateContent.toPx() //closed
+//                                }
+//
+//                        }
+//                    }
+//                    Column(
+//                        modifier = dropdownModifer,
+//                        verticalArrangement = Arrangement.Center,
+//                        horizontalAlignment = Alignment.CenterHorizontally
+//                    ) {
+//
+//                        // Show the first and second selections
+//                        val firstSelectedIndex = selectedIndicesList.getOrNull(0)
+//                        val secondSelectedIndex = selectedIndicesList.getOrNull(1)
+//                        val thirdSelectedIndex = selectedIndicesList.getOrNull(2)
+//
+//                        val selectedItem1 = if (firstSelectedIndex != null) {
+//                            items[firstSelectedIndex].name
+//                        } else {
+//                            "Default1"
+//                        }
+//
+//                        val selectedItem2 = if (secondSelectedIndex != null) {
+//                            items[secondSelectedIndex].name
+//                        } else {
+//                            "Default2"
+//                        }
+//
+//
+//
+//                        Text(text = "Item 1: $selectedItem1", color = Color.White)
+//                        Button(onClick = {
+//                            drawerState = !drawerState
+//                            activeSlot = 0
+//                        }) {
+//                            Text("Open / Close Drawer")
+//                        }
+//                        Text(text = "Item 2: $selectedItem2", color = Color.White)
+//                        Button(onClick = {
+//                            drawerState = !drawerState
+//                            activeSlot = 1
+//                        }) {
+//                            Text("Open / Close Drawer")
+//                        }
+//
+//
+//                    }
+//
+//
+//
+//                    List(
+//                        modifier = Modifier.graphicsLayer {
+//                            this.translationX = translateList.toPx() // closed
+//                            //this.translationX = 0.dp.toPx() // -open
+//                        },
+//                        items = items,
+//                        selectedIndicesList = selectedIndicesList, // pass it in
+//                        maxSelections = 2,  // two items
+//                        activeSlot = activeSlot
+//                    )
+//                    //SecondScreen()
+//                }
 
-                    val translateContent: Dp by animateDpAsState(if (drawerState) 200.dp else 0.dp, label = "translateContent")
-                    val translateList: Dp by animateDpAsState(if (drawerState) 0.dp else 200.dp, label = "translateList")
-
-                    // --- Changed from a Set<Int> to a mutable list for order-based swapping ---
-                    val selectedIndicesList = remember { mutableStateListOf<Int>() }
-
-                    val items by remember {
-                        mutableStateOf(
-                            (1..20).map {
-                                val rnd = Random.nextDouble(0.0,100.0)
-                                ItemData(
-                                    name = "name $it",
-                                    desc = "-name-",
-                                    value = String.format("%.2f",rnd),
-                                    isSelected = false
-                                )
-
-                            }
-                        )
-                    }
-
-                    var dropdownModifer = when(drawerState){
-                        true -> {
-                            Modifier
-                                .fillMaxWidth()
-                                .fillMaxHeight()
-                                .background(Color.Blue)
-                                .graphicsLayer {
-                                    //this.translationX = -200.dp.toPx() // open
-                                    this.translationX = -translateContent.toPx() //closed
-                                }
-                                .clickable {
-                                    if (drawerState) {
-                                        drawerState = false
-                                    }
-                                }
-                        }
-                        false -> {
-                            Modifier
-                                .fillMaxWidth()
-                                .fillMaxHeight()
-                                .background(Color.Blue)
-                                .graphicsLayer {
-                                    //this.translationX = -200.dp.toPx() // open
-                                    this.translationX = -translateContent.toPx() //closed
-                                }
-
-                        }
-                    }
-                    Column(
-                        modifier = dropdownModifer,
-                        verticalArrangement = Arrangement.Center,
-                        horizontalAlignment = Alignment.CenterHorizontally
-                    ) {
-
-                        // Show the first and second selections
-                        val firstSelectedIndex = selectedIndicesList.getOrNull(0)
-                        val secondSelectedIndex = selectedIndicesList.getOrNull(1)
-                        val thirdSelectedIndex = selectedIndicesList.getOrNull(2)
-
-                        val selectedItem1 = if (firstSelectedIndex != null) {
-                            items[firstSelectedIndex].name
-                        } else {
-                            "Default1"
-                        }
-
-                        val selectedItem2 = if (secondSelectedIndex != null) {
-                            items[secondSelectedIndex].name
-                        } else {
-                            "Default2"
-                        }
-
-                        val selectedItem3 = if (thirdSelectedIndex != null) {
-                            items[thirdSelectedIndex].name
-                        } else {
-                            "Default2"
-                        }
-
-                        Text(text = "Item 1: $selectedItem1", color = Color.White)
-                        Button(onClick = {
-                            drawerState = !drawerState
-                        }) {
-                            Text("Open / Close Drawer")
-                        }
-                        Text(text = "Item 2: $selectedItem2", color = Color.White)
-                        Button(onClick = {
-                            drawerState = !drawerState
-                        }) {
-                            Text("Open / Close Drawer")
-                        }
-
-                        Text(text = "Item 3: $selectedItem3", color = Color.White)
-                        Button(onClick = {
-                            drawerState = !drawerState
-                        }) {
-                            Text("Open / Close Drawer")
-                        }
-                    }
-
-
-
-                    List(
-                        modifier = Modifier.graphicsLayer {
-                            this.translationX = translateList.toPx() // closed
-                            //this.translationX = 0.dp.toPx() // -open
-                        },
-                        items = items,
-                        selectedIndicesList = selectedIndicesList, // pass it in
-                        maxSelections = 3  // two items
-                    )
-                    //SecondScreen()
-                }
+                ExampleDropdownSlideList()
             }
         }
     }
 }
-
-
-
-@Composable
-fun List(
-    modifier: Modifier = Modifier,
-    items: List<ItemData>,
-    selectedIndicesList: SnapshotStateList<Int>,
-    maxSelections: Int = 2
-) {
-    LazyColumn(
-        modifier = modifier
-            .width(200.dp)
-            .fillMaxHeight()
-            .background(Color.Red)
-    ) {
-        itemsIndexed(items) { index, item ->
-            // Find out if (and where) this item is selected
-            val slot = selectedIndicesList.indexOf(index)  // -1 if not selected
-
-            val isSelected = slot != -1
-
-            CustomListItem(
-                // Pass isSelected for the UI
-                item = item.copy(isSelected = isSelected),
-                onClick = {
-                    if (isSelected) {
-                        // Item is already selected
-                        if (selectedIndicesList.size == maxSelections) {
-                            // If we have a full list of selections,
-                            // and the user taps a selected item:
-                            // We'll "re-prioritize" it to the front (slot=0)
-                            // by removing and re-inserting:
-                            selectedIndicesList.remove(index)
-                            selectedIndicesList.add(0, index)
-                        } else {
-                            // If there's only 1 selected or we haven't
-                            // reached the limit, unselect it
-                            selectedIndicesList.remove(index)
-                        }
-                    } else {
-                        // Item is NOT selected. We want to add it.
-                        if (selectedIndicesList.size < maxSelections) {
-                            // If there's room, just add
-                            selectedIndicesList.add(index)
-                        } else {
-                            // If we're at the limit, remove the oldest
-                            // and add the new one
-                            selectedIndicesList.removeAt(0)
-                            selectedIndicesList.add(index)
-                        }
-                    }
-                },
-                slot = slot  // We'll pass the slot so we can show it if we want
-            )
-        }
-    }
-}
-
-
-@Composable
-fun CustomListItem(
-    item: ItemData,
-    onClick: () -> Unit,
-    slot: Int // -1 means "not selected", 0 means "first item", 1 means "second", etc.
-) {
-    Row(
-        modifier = Modifier
-            .fillMaxWidth()
-            .clickable { onClick() }
-            .background(
-                if (item.isSelected) DgenTheme.colors.dgenWhite
-                else DgenTheme.colors.dgenBlack
-            )
-            .padding(16.dp),
-        verticalAlignment = Alignment.CenterVertically,
-        horizontalArrangement = Arrangement.SpaceBetween
-    ) {
-        Column {
-            Text(
-                text = item.name,
-                style = DgenTheme.typography.body1,
-                color = if (item.isSelected) DgenTheme.colors.dgenBlack
-                else DgenTheme.colors.dgenWhite
-            )
-            Text(
-                text = item.desc,
-                style = DgenTheme.typography.label,
-                color = if (item.isSelected) DgenTheme.colors.dgenBlack
-                else DgenTheme.colors.dgenWhite
-            )
-            // Show which slot we're in, if we want
-            if (slot != -1) {
-                Text(
-                    text = "Slot: ${slot + 1}", // slot is 0-based
-                    style = DgenTheme.typography.label,
-                    color = if (item.isSelected) DgenTheme.colors.dgenBlack
-                    else DgenTheme.colors.dgenWhite
-                )
-            }
-        }
-        Text(
-            text = item.value,
-            style = DgenTheme.typography.button,
-            color = if (item.isSelected) DgenTheme.colors.dgenBlack
-            else DgenTheme.colors.dgenWhite
-        )
-    }
-}
-
-
-data class ItemData(
-    var name: String = "",
-    var desc: String = "",
-    var value: String = "",
-    var isSelected: Boolean = false
-)
 
 @Composable
 fun MyApp() {
