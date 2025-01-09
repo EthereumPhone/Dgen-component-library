@@ -1,4 +1,4 @@
-package com.example.dgen_component_library
+package com.example.dgenlibrary
 
 import android.util.Log
 import androidx.compose.animation.core.animateDpAsState
@@ -97,7 +97,7 @@ fun <T> DgenDropdownSlideList(
                 val slot = selectedIndicesList.indexOf(index) // -1 if not selected
                 val isSelected = slot != -1
                 val isActive = activeSlot != null && slot == (activeSlot!! - 1)
-                Log.d("SLOT","$activeSlot - $slot - $isActive")
+                //og.d("SLOT","$activeSlot - $slot - $isActive")
 
                 itemContent(
                     item,
@@ -107,17 +107,38 @@ fun <T> DgenDropdownSlideList(
                 ) {
                     if (isSelected) {
                         if (selectedIndicesList.size == maxSelections) {
-                            selectedIndicesList.remove(index)
-                            selectedIndicesList.add(0, index)
+//                            selectedIndicesList.remove(index)
+//                            selectedIndicesList.add(0, index)
+
+                            if (selectedIndicesList.contains(index)){
+                                val firstIndex = selectedIndicesList.indexOf(index)
+                                val secondIndex = activeSlot!!-1
+                                if (firstIndex in selectedIndicesList.indices && secondIndex in selectedIndicesList.indices) {
+                                    val temp = selectedIndicesList[firstIndex]
+                                    selectedIndicesList[firstIndex] = selectedIndicesList[secondIndex]
+                                    selectedIndicesList[secondIndex] = temp
+                                }
+                            }else {
+                                Log.d("SLOT","Replace ${activeSlot!! - 1} - $index")
+                                selectedIndicesList[activeSlot!!-1] = index
+                            }
+
                         } else {
+                            Log.d("SLOT","Remove ${activeSlot!! - 1} - $index")
+
                             selectedIndicesList.remove(index)
                         }
                     } else {
                         if (selectedIndicesList.size < maxSelections) {
+                            Log.d("SLOT","Add ${activeSlot!! - 1} - $index")
+
                             selectedIndicesList.add(index)
                         } else {
-                            selectedIndicesList.removeAt(0)
-                            selectedIndicesList.add(index)
+
+
+                            Log.d("SLOT","Non Select ${activeSlot!! - 1} - $index")
+
+                            selectedIndicesList[activeSlot!!-1] = index
                         }
                     }
                 }
@@ -145,7 +166,7 @@ fun ExampleDropdownSlideList() {
     DgenDropdownSlideList(
         items = items,
         //preSelectedList = preselectedIndex,
-        maxSelections = 1,
+        maxSelections = 2,
         itemContent = { item, slot, isSelected, isActive, onClick ->
             Row(
                 modifier = Modifier
@@ -189,15 +210,15 @@ fun ExampleDropdownSlideList() {
                 Text("Toggle Drawer Intern 1")
             }
 
-//            val secondSlot = selectedIndicesList.getOrNull(1)
-//            val value2 = if (secondSlot != null) { items[secondSlot].name } else { "Default 2" }
-//            Text("Slot ${1}: Item ${value2}")
-//            Button(onClick = {
-//                activeSlot(2)
-//                toggleDrawer() // Drawer öffnen oder schließen
-//            }) {
-//                Text("Toggle Drawer Intern 2")
-//            }
+            val secondSlot = selectedIndicesList.getOrNull(1)
+            val value2 = if (secondSlot != null) { items[secondSlot].name } else { "Default 2" }
+            Text("Slot ${1}: Item ${value2}")
+            Button(onClick = {
+                activeSlot(2)
+                toggleDrawer() // Drawer öffnen oder schließen
+            }) {
+                Text("Toggle Drawer Intern 2")
+            }
         }
     }
 }
