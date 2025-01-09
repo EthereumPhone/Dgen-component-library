@@ -10,6 +10,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.runtime.Immutable
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextDecoration
 
 @Immutable
 data class DgenColors(
@@ -21,6 +22,7 @@ data class DgenColors(
     val dgenGreen: Color,
     val dgenAqua: Color,
     val dgenOrche: Color,
+    val dgenOcean: Color,
 )
 
 @Immutable
@@ -50,7 +52,8 @@ val LocalCustomColors = staticCompositionLocalOf {
         dgenDarkBlack = Color.Unspecified,
         dgenGreen = Color.Unspecified,
         dgenAqua = Color.Unspecified,
-        dgenOrche = Color.Unspecified
+        dgenOrche = Color.Unspecified,
+        dgenOcean = Color.Unspecified
     )
 }
 val LocalCustomTypography = staticCompositionLocalOf {
@@ -85,7 +88,8 @@ fun DgenTheme(
         dgenDarkBlack = dgenDarkBlack,
         dgenGreen = dgenGreen,
         dgenAqua = dgenAqua,
-        dgenOrche = dgenOrche
+        dgenOrche = dgenOrche,
+        dgenOcean = dgenOcean
     )
     val customTypography = DgenTypography(
         header0 = TextStyle(
@@ -94,7 +98,8 @@ fun DgenTheme(
             fontWeight = FontWeight.SemiBold,
             fontSize = 128.sp,
             lineHeight = 128.sp,
-            letterSpacing = 0.sp
+            letterSpacing = 0.sp,
+            textDecoration = TextDecoration.None
         ),
         header1 = TextStyle(
             fontFamily = SourceSansProFamily,
@@ -102,7 +107,8 @@ fun DgenTheme(
             fontWeight = FontWeight.SemiBold,
             fontSize = 72.sp,
             lineHeight = 72.sp,
-            letterSpacing = 0.sp
+            letterSpacing = 0.sp,
+            textDecoration = TextDecoration.None
         ),
         header2 = TextStyle(
             fontFamily = SourceSansProFamily,
@@ -110,7 +116,8 @@ fun DgenTheme(
             fontWeight = FontWeight.SemiBold,
             fontSize = 48.sp,
             lineHeight = 48.sp,
-            letterSpacing = 0.sp
+            letterSpacing = 0.sp,
+            textDecoration = TextDecoration.None
         ),
         header3 = TextStyle(
             fontFamily = SourceSansProFamily,
@@ -118,7 +125,8 @@ fun DgenTheme(
             fontWeight = FontWeight.SemiBold,
             fontSize = 40.sp,
             lineHeight = 40.sp,
-            letterSpacing = 0.sp
+            letterSpacing = 0.sp,
+            textDecoration = TextDecoration.None
         ),
         body2 = TextStyle(
             fontFamily = SourceSansProFamily,
@@ -126,7 +134,8 @@ fun DgenTheme(
             fontWeight = FontWeight.SemiBold,
             fontSize = 32.sp,
             lineHeight = 32.sp,
-            letterSpacing = 0.sp
+            letterSpacing = 0.sp,
+            textDecoration = TextDecoration.None
         ),
         body1 = TextStyle(
             fontFamily = SourceSansProFamily,
@@ -134,7 +143,8 @@ fun DgenTheme(
             fontWeight = FontWeight.SemiBold,
             fontSize = 24.sp,
             lineHeight = 24.sp,
-            letterSpacing = 0.sp
+            letterSpacing = 0.sp,
+            textDecoration = TextDecoration.None
         ),
         button = TextStyle(
             fontFamily = SourceSansProFamily,
@@ -142,15 +152,17 @@ fun DgenTheme(
             fontWeight = FontWeight.SemiBold,
             fontSize = 24.sp,
             lineHeight = 24.sp,
-            letterSpacing = 0.sp
+            letterSpacing = 0.sp,
+            textDecoration = TextDecoration.None
         ),
         label = TextStyle(
-            fontFamily = SourceSansProFamily,
+            fontFamily = MonomaniacOneFamily,
             color = dgenWhite,
-            fontWeight = FontWeight.SemiBold,
+            fontWeight = FontWeight.Normal,
             fontSize = 16.sp,
             lineHeight = 16.sp,
-            letterSpacing = 0.sp
+            letterSpacing = 0.sp,
+            textDecoration = TextDecoration.None
         ),
     )
     val customElevation = DgenElevation(

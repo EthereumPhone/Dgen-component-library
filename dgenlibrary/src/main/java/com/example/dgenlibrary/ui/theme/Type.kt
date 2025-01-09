@@ -18,6 +18,10 @@ val SourceSansProFamily = FontFamily(
     Font(R.font.sourcesans3_bold, FontWeight.Bold)
 )
 
+val MonomaniacOneFamily = FontFamily(
+    Font(R.font.monomaniacone_regular, FontWeight.Normal),
+)
+
 //val DgenTypography = Typography(
 //    bodyMedium = TextStyle(
 //        fontFamily = fontFamily, fontWeight = FontWeight.Normal, fontSize = 12.sp/*...*/

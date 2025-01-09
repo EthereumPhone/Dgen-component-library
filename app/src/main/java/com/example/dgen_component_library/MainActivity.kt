@@ -5,13 +5,27 @@ import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.defaultMinSize
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.text.BasicTextField
 import androidx.compose.foundation.verticalScroll
+import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Text
+import androidx.compose.material3.TextField
+import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.SolidColor
+import androidx.compose.ui.text.input.TextFieldValue
 import androidx.compose.ui.unit.dp
 import com.example.dgenlibrary.ExampleDropdownSlideList
 import com.example.dgenlibrary.PrimaryButton
@@ -20,12 +34,68 @@ import com.example.dgenlibrary.ui.theme.DgenTheme
 
 
 class MainActivity : ComponentActivity() {
+    @OptIn(ExperimentalMaterial3Api::class)
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContent {
             DgenTheme {
 
-                ExampleDropdownSlideList()
+                var textFieldValue by remember { mutableStateOf(TextFieldValue("Text")) }
+
+                Column(
+                    Modifier
+                        .fillMaxSize()
+                        .background(Color.Black)
+                ) {
+                    DgenTextfield(
+                        textFieldValue,
+                        {new -> textFieldValue = new},
+                        label = "Text",
+                        labelColor = DgenTheme.colors.dgenOcean,
+                        backgroundColor = DgenTheme.colors.dgenOcean,
+                    )
+//                    BasicTextField(
+//                        value = text,
+//                        onValueChange = { newtext -> text = newtext },
+//                        modifier = Modifier
+//                            .defaultMinSize(
+//                                minWidth = TextFieldDefaults.MinWidth,
+//                                minHeight = TextFieldDefaults.MinHeight
+//                            ),
+//                        enabled = true,
+//                        cursorBrush = SolidColor(DgenTheme.colors.dgenWhite),
+//                        decorationBox = @Composable { innerTextField ->
+//                            // places leading icon, text field with label and placeholder, trailing icon
+//                            TextFieldDefaults.DecorationBox(
+//                                value = text,
+//                                innerTextField = innerTextField,
+//                                label = {
+//                                    Text("Text")
+//                                },
+//
+//                                singleLine = TODO(),
+//                                visualTransformation = TODO(),
+//                                isError = TODO(),
+//                                placeholder = TODO(),
+//                                leadingIcon = TODO(),
+//                                trailingIcon = TODO(),
+//                                prefix = TODO(),
+//                                suffix = TODO(),
+//                                supportingText = TODO(),
+//                                contentPadding = TODO(),
+//                                container = TODO(),
+//                                enabled = TODO(),
+//                                interactionSource = TODO(),
+//                                shape = TODO(),
+//                                colors = TODO()
+//                            )
+//                        }
+//                    )
+//                    ExampleDropdownSlideList()
+                }
+
+
+//
             }
         }
     }
@@ -92,7 +162,7 @@ fun MainScreen() {
             .background(DgenTheme.colors.dgenBlack)
             .padding(16.dp)
     ) {
-        PrimaryButton({}){
+        PrimaryButton(){
                 Text(text = "Mint")
             }
 

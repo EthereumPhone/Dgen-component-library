@@ -37,11 +37,11 @@ import com.example.dgenlibrary.ui.theme.DgenTheme
 
 @Composable
 fun PrimaryButton(
-    onClick: () -> Unit,
     modifier: Modifier = Modifier,
+    onClick: () -> Unit = {},
     content: @Composable RowScope.() -> Unit
 ) {
-    DgenTheme {
+
         Button(
             colors = ButtonDefaults.buttonColors(
                 containerColor = DgenTheme.colors.dgenWhite,
@@ -65,14 +65,14 @@ fun PrimaryButton(
                 }
             }
         )
-    }
+
     
 }
 
 @Preview(showBackground = true)
 @Composable
 fun PreviewPrimaryButton(){
-    PrimaryButton({}){
+    PrimaryButton(){
         Text(text = "Mint")
     }
 }
