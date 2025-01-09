@@ -17,7 +17,8 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
-
+import com.example.dgenlibrary.ui.theme.DgenTheme
+import com.example.dgenlibrary.ui.theme.dgenBlack
 
 
 @Composable
@@ -26,12 +27,14 @@ fun <T> DgenDropdownSlideList(
     preSelectedList: SnapshotStateList<Int>? = null,
     items: List<T>,
     maxSelections: Int = 2,
+    drawerWidth: Dp = 200.dp,
+    drawerColor: Color = DgenTheme.colors.dgenBlack,
     itemContent: @Composable (T, Int, Boolean, Boolean, () -> Unit) -> Unit,
-    screenContent: @Composable (SnapshotStateList<Int>, (Int?) -> Unit, () -> Unit) -> Unit
+    screenContent: @Composable (SnapshotStateList<Int>, (Int?) -> Unit, () -> Unit) -> Unit,
 ) {
     var drawerState by remember { mutableStateOf(false) }
-    val translateContent: Dp by animateDpAsState(if (drawerState) 200.dp else 0.dp, label = "translateContent")
-    val translateList: Dp by animateDpAsState(if (drawerState) 0.dp else 200.dp, label = "translateList")
+    val translateContent: Dp by animateDpAsState(if (drawerState) drawerWidth else 0.dp, label = "translateContent")
+    val translateList: Dp by animateDpAsState(if (drawerState) 0.dp else drawerWidth, label = "translateList")
 
 
     var selectedIndicesList = remember { mutableStateListOf<Int>() }
@@ -46,7 +49,6 @@ fun <T> DgenDropdownSlideList(
             Modifier
                 .fillMaxWidth()
                 .fillMaxHeight()
-                .background(Color.Blue)
                 .graphicsLayer {
                     //this.translationX = -200.dp.toPx() // open
                     this.translationX = -translateContent.toPx() //closed
@@ -61,12 +63,10 @@ fun <T> DgenDropdownSlideList(
             Modifier
                 .fillMaxWidth()
                 .fillMaxHeight()
-                .background(Color.Blue)
                 .graphicsLayer {
                     //this.translationX = -200.dp.toPx() // open
                     this.translationX = -translateContent.toPx() //closed
                 }
-
         }
     }
 
@@ -78,26 +78,23 @@ fun <T> DgenDropdownSlideList(
         ) {
             screenContent(selectedIndicesList, {
                 activeSlot = it
-                Log.d("SLOT screenContent","$activeSlot - $it ")
             }, {
                 drawerState = !drawerState
             })
-
         }
-
 
         LazyColumn(
             modifier = Modifier
                 .graphicsLayer { this.translationX = translateList.toPx() }
-                .width(200.dp)
+                .width(drawerWidth)
+                .background(drawerColor)
                 .fillMaxHeight()
-                .background(Color.Red)
         ) {
             itemsIndexed(items) { index, item ->
+
                 val slot = selectedIndicesList.indexOf(index) // -1 if not selected
                 val isSelected = slot != -1
                 val isActive = activeSlot != null && slot == (activeSlot!! - 1)
-                //og.d("SLOT","$activeSlot - $slot - $isActive")
 
                 itemContent(
                     item,
@@ -107,9 +104,6 @@ fun <T> DgenDropdownSlideList(
                 ) {
                     if (isSelected) {
                         if (selectedIndicesList.size == maxSelections) {
-//                            selectedIndicesList.remove(index)
-//                            selectedIndicesList.add(0, index)
-
                             if (selectedIndicesList.contains(index)){
                                 val firstIndex = selectedIndicesList.indexOf(index)
                                 val secondIndex = activeSlot!!-1
@@ -119,25 +113,19 @@ fun <T> DgenDropdownSlideList(
                                     selectedIndicesList[secondIndex] = temp
                                 }
                             }else {
-                                Log.d("SLOT","Replace ${activeSlot!! - 1} - $index")
+//                                Log.d("SLOT","Replace ${activeSlot!! - 1} - $index")
                                 selectedIndicesList[activeSlot!!-1] = index
                             }
-
                         } else {
-                            Log.d("SLOT","Remove ${activeSlot!! - 1} - $index")
-
+//                            Log.d("SLOT","Remove ${activeSlot!! - 1} - $index")
                             selectedIndicesList.remove(index)
                         }
                     } else {
                         if (selectedIndicesList.size < maxSelections) {
-                            Log.d("SLOT","Add ${activeSlot!! - 1} - $index")
-
+//                            Log.d("SLOT","Add ${activeSlot!! - 1} - $index")
                             selectedIndicesList.add(index)
                         } else {
-
-
-                            Log.d("SLOT","Non Select ${activeSlot!! - 1} - $index")
-
+//                            Log.d("SLOT","Non Select ${activeSlot!! - 1} - $index")
                             selectedIndicesList[activeSlot!!-1] = index
                         }
                     }
@@ -173,7 +161,7 @@ fun ExampleDropdownSlideList() {
                     .fillMaxWidth()
                     .clickable { onClick() }
                     .background(
-                        if (isSelected) Color.Green else Color.Gray
+                        if (isSelected) Color.Green else Color.Transparent
                     )
                     .padding(16.dp),
                 verticalAlignment = Alignment.CenterVertically,
