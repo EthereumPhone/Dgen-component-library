@@ -25,16 +25,21 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.SolidColor
+import androidx.compose.ui.text.TextStyle
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.TextFieldValue
+import androidx.compose.ui.text.style.TextDecoration
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import com.example.dgenlibrary.ExampleDropdownSlideList
 import com.example.dgenlibrary.PrimaryButton
 
 import com.example.dgenlibrary.ui.theme.DgenTheme
+import com.example.dgenlibrary.ui.theme.SourceSansProFamily
+import com.example.dgenlibrary.ui.theme.dgenWhite
 
 
 class MainActivity : ComponentActivity() {
-    @OptIn(ExperimentalMaterial3Api::class)
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContent {
@@ -47,55 +52,34 @@ class MainActivity : ComponentActivity() {
                         .fillMaxSize()
                         .background(Color.Black)
                 ) {
-                    DgenTextfield(
+                    DgenBasicTextfield(
                         textFieldValue,
                         {new -> textFieldValue = new},
-                        label = "Text",
-                        labelColor = DgenTheme.colors.dgenOcean,
-                        backgroundColor = DgenTheme.colors.dgenOcean,
                     )
-//                    BasicTextField(
-//                        value = text,
-//                        onValueChange = { newtext -> text = newtext },
-//                        modifier = Modifier
-//                            .defaultMinSize(
-//                                minWidth = TextFieldDefaults.MinWidth,
-//                                minHeight = TextFieldDefaults.MinHeight
-//                            ),
-//                        enabled = true,
-//                        cursorBrush = SolidColor(DgenTheme.colors.dgenWhite),
-//                        decorationBox = @Composable { innerTextField ->
-//                            // places leading icon, text field with label and placeholder, trailing icon
-//                            TextFieldDefaults.DecorationBox(
-//                                value = text,
-//                                innerTextField = innerTextField,
-//                                label = {
-//                                    Text("Text")
-//                                },
-//
-//                                singleLine = TODO(),
-//                                visualTransformation = TODO(),
-//                                isError = TODO(),
-//                                placeholder = TODO(),
-//                                leadingIcon = TODO(),
-//                                trailingIcon = TODO(),
-//                                prefix = TODO(),
-//                                suffix = TODO(),
-//                                supportingText = TODO(),
-//                                contentPadding = TODO(),
-//                                container = TODO(),
-//                                enabled = TODO(),
-//                                interactionSource = TODO(),
-//                                shape = TODO(),
-//                                colors = TODO()
-//                            )
-//                        }
-//                    )
-//                    ExampleDropdownSlideList()
+                    DgenTextfield(
+                        value = textFieldValue,
+                        onValueChange = {new -> textFieldValue = new},
+                        backgroundColor = DgenTheme.colors.dgenAqua,
+                        cursorColor = DgenTheme.colors.dgenAqua,
+                        cursorWidth = 21.dp,
+                        cursorHeight = 42.dp,
+                        textStyle = TextStyle(
+                            fontFamily = SourceSansProFamily,
+                            color = dgenWhite,
+                            fontWeight = FontWeight.SemiBold,
+                            fontSize = 42.sp,
+                            lineHeight = 42.sp,
+                            letterSpacing = 0.sp,
+                            textDecoration = TextDecoration.None
+                        )
+                    ){
+                        Text(
+                            text = "Text",
+                            style = DgenTheme.typography.label,
+                            color = DgenTheme.colors.dgenAqua
+                        )
+                    }
                 }
-
-
-//
             }
         }
     }
