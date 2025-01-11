@@ -43,6 +43,15 @@ data class DgenElevation(
     val pressed: Dp
 )
 
+
+@Immutable
+data class DgenDimension(
+    val IconSize: Dp,
+    val IconButtonSize: Dp,
+
+)
+
+
 val LocalCustomColors = staticCompositionLocalOf {
     DgenColors(
         dgenBlack = Color.Unspecified,
@@ -72,6 +81,13 @@ val LocalCustomElevation = staticCompositionLocalOf {
     DgenElevation(
         default = Dp.Unspecified,
         pressed = Dp.Unspecified
+    )
+}
+
+val LocalCustomDimension = staticCompositionLocalOf {
+    DgenDimension(
+        IconSize = Dp.Unspecified,
+        IconButtonSize = Dp.Unspecified
     )
 }
 
@@ -169,10 +185,17 @@ fun DgenTheme(
         default = 4.dp,
         pressed = 8.dp
     )
+
+    val customDimension = DgenDimension(
+        IconSize = IconSize,
+        IconButtonSize = IconButtonSize
+    )
+
     CompositionLocalProvider(
         LocalCustomColors provides customColors,
         LocalCustomTypography provides customTypography,
         LocalCustomElevation provides customElevation,
+        LocalCustomDimension provides customDimension,
         content = content
     )
 }
@@ -188,4 +211,7 @@ object DgenTheme {
     val elevation: DgenElevation
         @Composable
         get() = LocalCustomElevation.current
+    val dimensions: DgenDimension
+        @Composable
+        get() = LocalCustomDimension.current
 }
