@@ -187,7 +187,7 @@ fun ExampleActionBarBox(){
                             verticalArrangement = Arrangement.spacedBy(12.dp)
                         ) {
                             items(15){
-                                Text(text="ijmoptwijmotrijmoewioqtwioprtvwijmowoijmpwiopmrtv",color = Color.White, fontSize = 24.sp)
+                                Text(text="Test",color = Color.White, fontSize = 24.sp)
                             }
                         }
                     }

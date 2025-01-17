@@ -153,7 +153,6 @@ fun ExampleDropdownSlideList() {
 
     DgenDropdownSlideList(
         items = items,
-        //preSelectedList = preselectedIndex,
         maxSelections = 2,
         itemContent = { item, slot, isSelected, isActive, onClick ->
             Row(
