@@ -22,18 +22,7 @@ val MonomaniacOneFamily = FontFamily(
     Font(R.font.monomaniacone_regular, FontWeight.Normal),
 )
 
-//val DgenTypography = Typography(
-//    bodyMedium = TextStyle(
-//        fontFamily = fontFamily, fontWeight = FontWeight.Normal, fontSize = 12.sp/*...*/
-//    ),
-//    bodyLarge = TextStyle(
-//        fontFamily = fontFamily,
-//        fontWeight = FontWeight.Bold,
-//        letterSpacing = 2.sp,
-//        /*...*/
-//    ),
-//    headlineMedium = TextStyle(
-//        fontFamily = fontFamily, fontWeight = FontWeight.SemiBold/*...*/
-//    ),
-//    /*...*/
-//)
+val Exo2Family = FontFamily(
+    Font(R.font.exo2_medium, FontWeight.Normal),
+    Font(R.font.exo2_semibold, FontWeight.SemiBold),
+)

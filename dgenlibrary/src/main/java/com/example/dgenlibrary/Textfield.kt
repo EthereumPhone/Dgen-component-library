@@ -1,6 +1,7 @@
 package com.example.dgenlibrary
 
 import android.annotation.SuppressLint
+import android.view.View
 import androidx.compose.animation.animateColorAsState
 import androidx.compose.animation.core.LinearEasing
 import androidx.compose.animation.core.RepeatMode
@@ -8,8 +9,11 @@ import androidx.compose.animation.core.animateFloat
 import androidx.compose.animation.core.infiniteRepeatable
 import androidx.compose.animation.core.rememberInfiniteTransition
 import androidx.compose.animation.core.tween
+import androidx.compose.foundation.ExperimentalFoundationApi
+import androidx.compose.foundation.gestures.detectTapGestures
 import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
@@ -18,30 +22,40 @@ import androidx.compose.foundation.text.BasicTextField
 import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
+import androidx.compose.ui.Alignment
+import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.drawBehind
+import androidx.compose.ui.focus.FocusManager
 import androidx.compose.ui.focus.onFocusChanged
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.Shape
 import androidx.compose.ui.graphics.SolidColor
 import androidx.compose.ui.graphics.drawscope.DrawScope
+import androidx.compose.ui.hapticfeedback.HapticFeedbackType
 import androidx.compose.ui.input.key.Key
 import androidx.compose.ui.input.key.nativeKeyCode
 import androidx.compose.ui.input.key.onKeyEvent
+import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.platform.LocalFocusManager
+import androidx.compose.ui.platform.LocalHapticFeedback
 import androidx.compose.ui.text.TextLayoutResult
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.input.ImeAction
+import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.input.TextFieldValue
+import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import com.example.dgenlibrary.ui.theme.DgenTheme
+
 
 
 @SuppressLint("SuspiciousIndentation")
@@ -49,6 +63,9 @@ import com.example.dgenlibrary.ui.theme.DgenTheme
 fun DgenBasicTextfield(
     value: TextFieldValue = TextFieldValue(""),
     onValueChange: (TextFieldValue) -> Unit,
+    keyboardtype: KeyboardType =  KeyboardType.Text,
+    isAnyFieldFocused: MutableState<Boolean>,
+    textfieldFocusManager: FocusManager? = null,
     modifier: Modifier = Modifier,
     enabled: Boolean = true,
     readOnly: Boolean = false,
@@ -59,12 +76,12 @@ fun DgenBasicTextfield(
     cursorWidth: Dp = 12.dp,
     cursorHeight: Dp = 32.dp,
     textStyle: TextStyle = DgenTheme.typography.body2,
-
-    ) {
+    placeholder: @Composable() (() -> Unit)? = null,
+) {
     var textLayoutResult by remember { mutableStateOf<TextLayoutResult?>(null) }
 
     var isFocused by remember { mutableStateOf(false) }
-    val focusManager = LocalFocusManager.current
+    val focusManager = textfieldFocusManager ?: LocalFocusManager.current
 
     val cursorAlpha by rememberInfiniteTransition().animateFloat(
         initialValue = 1f,
@@ -75,6 +92,15 @@ fun DgenBasicTextfield(
         )
     )
 
+    Box(
+        modifier = modifier,
+        contentAlignment = Alignment.Center
+    ) {
+        if (value.text.isEmpty()) {
+            if (placeholder != null && !isFocused) {
+                placeholder()
+            }
+        }
 
         BasicTextField(
             value = value,
@@ -82,28 +108,40 @@ fun DgenBasicTextfield(
             modifier = modifier
                 .fillMaxWidth()
                 .drawBehind {
-                    drawCustomCursor(
-                        textFieldValue = value,
-                        textLayoutResult = textLayoutResult,
-                        cursorColor = if(isFocused) cursorColor else Color.Transparent, // Blinken
-                        cursorWidth = cursorWidth.toPx(),
-                        cursorHeight = cursorHeight.toPx(),
-                        cursorAlpha = cursorAlpha
-                    )
+                    if (isFocused){
+                        textLayoutResult?.let {
+                            val cursorRect = it.getCursorRect(value.selection.start)
+                            drawRect(
+                                color = cursorColor,
+                                topLeft = Offset(cursorRect.left, ((cursorRect.top + cursorRect.bottom) / 2 ) - (cursorHeight.toPx() /2)),
+                                size = androidx.compose.ui.geometry.Size(cursorWidth.toPx(), cursorHeight.toPx()),
+                                alpha = cursorAlpha
+                            )
+                        }
+                    }
+
                 }
                 .onFocusChanged { focusState ->
                     isFocused = focusState.isFocused
+                    isAnyFieldFocused.value = focusState.isFocused
                 }
             ,
             keyboardOptions = KeyboardOptions.Default.copy(
-                imeAction = ImeAction.Done
+                imeAction = ImeAction.Done,
+                keyboardType = keyboardtype
             ),
+
             keyboardActions = KeyboardActions(
+                onGo = {
+                    isFocused = true
+                },
                 onDone = {
                     focusManager.clearFocus() // Fokus entfernen, wenn Enter gedrückt wird
+                    isFocused = false
                 }
             ),
             textStyle = textStyle,
+            visualTransformation = VisualTransformation.None, // Ensure no transformations
             enabled = enabled,
             readOnly = readOnly,
             cursorBrush = SolidColor(Color.Unspecified),
@@ -112,13 +150,22 @@ fun DgenBasicTextfield(
             interactionSource = interactionSource,
             onTextLayout = { textLayoutResult = it }
         )
+
+    }
+
 }
 
 
+@OptIn(ExperimentalFoundationApi::class, ExperimentalComposeUiApi::class)
 @Composable
 fun DgenTextfield(
     value: TextFieldValue = TextFieldValue(""),
     onValueChange: (TextFieldValue) -> Unit,
+    keyboardtype: KeyboardType =  KeyboardType.Text,
+    isAnyFieldFocused: MutableState<Boolean>,
+    textfieldFocusManager: FocusManager? = null,
+    onEditDone: () -> Unit,
+    onDoubleTap: () -> Unit = {},
     modifier: Modifier = Modifier,
     enabled: Boolean = true,
     readOnly: Boolean = false,
@@ -131,11 +178,16 @@ fun DgenTextfield(
     cursorWidth: Dp = 12.dp,
     cursorHeight: Dp = 32.dp,
     textStyle: TextStyle = DgenTheme.typography.body2,
+    description: String = "",
+    view: View,
+    placeholder: @Composable() (() -> Unit)? = null,
     labelContent: @Composable() (() -> Unit)? = null,
-    ) {
+) {
+
 
     var isFocused by remember { mutableStateOf(false) }
-    val focusManager = LocalFocusManager.current // Zugriff auf den FocusManager
+
+    val focusManager = textfieldFocusManager ?: LocalFocusManager.current
 
 
     val backgroundColor by animateColorAsState(
@@ -144,6 +196,7 @@ fun DgenTextfield(
         label = "backgroundColor" // Dauer der Animation in Millisekunden
     )
 
+    val haptics = LocalHapticFeedback.current
 
 
     Column (
@@ -159,6 +212,19 @@ fun DgenTextfield(
                 )
             }
             .padding(start = 24.dp, end = 24.dp, top = 8.dp, bottom = 8.dp)
+            .pointerInput(Unit) {
+                detectTapGestures(
+                    onDoubleTap = {
+                        onDoubleTap()
+                    },
+                    onLongPress = {
+                        haptics.performHapticFeedback(HapticFeedbackType.LongPress)
+                        focusManager.clearFocus()
+                        focusManager.moveFocus(focusDirection = androidx.compose.ui.focus.FocusDirection.Enter) // Request focus here
+
+                    }
+                )
+            }
             .onKeyEvent { // Ermöglicht zusätzliche Tastatureingaben
                 if (it.nativeKeyEvent.keyCode == Key.Enter.nativeKeyCode) {
                     focusManager.clearFocus() // Fokus entfernen bei Enter
@@ -175,12 +241,18 @@ fun DgenTextfield(
             labelContent()
         }
 
+
         DgenBasicTextfield(
             value = value,
             onValueChange = onValueChange,
             modifier = modifier
                 .fillMaxWidth()
+                .padding(end = 32.dp)
                 .onFocusChanged { focusState ->
+                    if (isFocused && !focusState.isFocused) {
+                        // Send Toast when losing focus
+                        onEditDone()
+                    }
                     isFocused = focusState.isFocused
                 }
             ,
@@ -189,12 +261,16 @@ fun DgenTextfield(
             readOnly = readOnly,
             minLines = minLines,
             maxLines = maxLines,
+            keyboardtype = keyboardtype,
             interactionSource = interactionSource,
             cursorColor =  cursorColor,
             cursorWidth = cursorWidth,
-            cursorHeight = cursorHeight
+            cursorHeight = cursorHeight,
+            placeholder = placeholder,
+            isAnyFieldFocused = isAnyFieldFocused
         )
-   }
+
+    }
 
 }
 
@@ -208,13 +284,21 @@ fun DrawScope.drawCustomCursor(
     cursorAlpha: Float
 ) {
 
-    textLayoutResult?.let {
-        val cursorRect = it.getCursorRect(textFieldValue.selection.start)
-        drawRect(
-            color = cursorColor,
-            topLeft = Offset(cursorRect.left, (cursorRect.top + cursorRect.bottom) / 2 - cursorHeight / 2 - cursorHeight / 8),
-            size = androidx.compose.ui.geometry.Size(cursorWidth, cursorHeight),
-            alpha = cursorAlpha
+    //val cursorRect = it.getCursorRect(textFieldValue.selection.start)
+    drawRect(
+
+        color = cursorColor,
+        topLeft = Offset(cursorHeight, cursorHeight),
+        size = androidx.compose.ui.geometry.Size(cursorWidth, cursorHeight),
+
         )
-    }
+//    textLayoutResult?.let {
+//        val cursorRect = it.getCursorRect(textFieldValue.selection.start)
+//        drawRect(
+//            color = cursorColor,
+//            topLeft = Offset(cursorRect.left, (cursorRect.top + cursorRect.bottom) / 2 - cursorHeight / 2 - cursorHeight / 8),
+//            size = androidx.compose.ui.geometry.Size(cursorWidth, cursorHeight),
+//            alpha = cursorAlpha
+//        )
+//    }
 }

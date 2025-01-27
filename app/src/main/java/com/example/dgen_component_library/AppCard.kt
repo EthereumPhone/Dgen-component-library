@@ -16,8 +16,11 @@ import androidx.compose.foundation.interaction.collectIsHoveredAsState
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.IntrinsicSize
 import androidx.compose.foundation.layout.aspectRatio
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.width
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
@@ -64,7 +67,6 @@ fun AppCard(
     painter: Painter,
     category: String,
     appName: String,
-    size: Dp = 120.dp
 ){
 
     val interactionSource = remember { MutableInteractionSource() }
@@ -85,7 +87,8 @@ fun AppCard(
             painter = painter,
             contentDescription = appName,
             contentScale = ContentScale.Crop,
-            modifier = modifier.size(size)
+            modifier = modifier.fillMaxWidth()
+                .aspectRatio(1f) // Makes the card square
                 .pointerInput(Unit){
                     detectTapGestures {
 
@@ -107,7 +110,7 @@ fun AppCard(
 
                     drawCategoryTag(
                         category = category,
-                        textSize = 30f,
+                        textSize = 20f,
                         textColor = android.graphics.Color.WHITE,
                         shapeColor = dgenRed,
                         rotationAngle = -90f,
@@ -185,7 +188,7 @@ fun DrawScope.drawCategoryTag(
     )
 
     // Calculate text position
-    val xPosition = (size.width / 10) * 2.05f // Center horizontally
+    val xPosition = (size.width / 10) * 2.1f // Center horizontally
     val yPosition = 10f // Vertically centered within the shape
 
     // Save the current canvas state
