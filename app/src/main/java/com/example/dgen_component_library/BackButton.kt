@@ -30,7 +30,7 @@ fun BackButton(
     IconButton(
         modifier = modifier
             .clip(CircleShape)
-            .graphicsLayer { translationX = -10f }
+            .graphicsLayer { translationX = -20f }
         ,
         onClick = {
             onClick()

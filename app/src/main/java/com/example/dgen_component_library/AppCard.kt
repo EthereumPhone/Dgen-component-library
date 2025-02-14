@@ -54,6 +54,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.core.content.res.ResourcesCompat
 import com.example.dgenlibrary.ui.theme.DgenTheme
+import com.example.dgenlibrary.ui.theme.Exo2Family
 import com.example.dgenlibrary.ui.theme.MonomaniacOneFamily
 import com.example.dgenlibrary.ui.theme.SourceSansProFamily
 import com.example.dgenlibrary.ui.theme.dgenRed
@@ -64,9 +65,8 @@ import com.example.dgenlibrary.ui.theme.dgenWhite
 fun AppCard(
     modifier: Modifier = Modifier,
     context: Context,
-    painter: Painter,
-    category: String,
-    appName: String,
+    app: AppMetadata,
+    onClick: () -> Unit
 ){
 
     val interactionSource = remember { MutableInteractionSource() }
@@ -84,8 +84,8 @@ fun AppCard(
 
 
         Image(
-            painter = painter,
-            contentDescription = appName,
+            painter = painterResource(app.logo) ,
+            contentDescription = app.name,
             contentScale = ContentScale.Crop,
             modifier = modifier.fillMaxWidth()
                 .aspectRatio(1f) // Makes the card square
@@ -94,6 +94,7 @@ fun AppCard(
 
                             isHovered = !isHovered
 
+                        onClick()
 
                     }
                 }
@@ -109,12 +110,12 @@ fun AppCard(
                     drawContent()
 
                     drawCategoryTag(
-                        category = category,
+                        category = app.tags[0],
                         textSize = 20f,
                         textColor = android.graphics.Color.WHITE,
                         shapeColor = dgenRed,
                         rotationAngle = -90f,
-                        fontResId = R.font.monomaniacone_regular,
+                        fontResId = com.example.dgenlibrary.R.font.spacemono_bold,
                         context = context
                     )
 
@@ -122,9 +123,9 @@ fun AppCard(
                 .border(1.dp, DgenTheme.colors.dgenWhite)
         )
         Text(
-            text = appName,
+            text = app.name,
             style = TextStyle(
-                fontFamily = SourceSansProFamily,
+                fontFamily = Exo2Family,
                 color = dgenWhite,
                 fontWeight = FontWeight.SemiBold,
                 fontSize = 18.sp,
@@ -141,12 +142,12 @@ fun AppCard(
 @Composable
 fun PreviewAppCard(){
     val context = LocalContext.current
-    AppCard(
-        context = context,
-        painter = painterResource(R.drawable.coinbase2),
-        category = "MARKETPLACE",
-        appName = "Coinbase",
-    )
+//    AppCard(
+//        context = context,
+//        painter = painterResource(R.drawable.coinbase2),
+//        category = "MARKETPLACE",
+//        appName = "Coinbase",
+//    )
 }
 
 fun DrawScope.drawCategoryTag(

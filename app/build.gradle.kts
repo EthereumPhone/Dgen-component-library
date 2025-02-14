@@ -23,10 +23,13 @@ android {
     buildTypes {
         release {
             isMinifyEnabled = false
+//            isShrinkResources = false
+
             proguardFiles(
                 getDefaultProguardFile("proguard-android-optimize.txt"),
                 "proguard-rules.pro"
             )
+            signingConfig = signingConfigs.getByName("debug")
         }
     }
     compileOptions {
@@ -68,6 +71,9 @@ dependencies {
     debugImplementation("androidx.compose.ui:ui-test-manifest")
 
     implementation("androidx.navigation:navigation-compose:2.7.0-alpha01")
+
+    implementation("androidx.compose.ui:ui:1.7.0-alpha07")
+    implementation("androidx.compose.animation:animation:1.7.0-alpha07")
 
 
     implementation(project(":dgenlibrary"))
