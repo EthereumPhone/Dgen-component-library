@@ -23,6 +23,8 @@ data class DgenColors(
     val dgenAqua: Color,
     val dgenOrche: Color,
     val dgenOcean: Color,
+    val dgenTurqoise: Color,
+    val dgenBurgendy: Color,
 )
 
 @Immutable
@@ -49,7 +51,7 @@ data class DgenDimension(
     val IconSize: Dp,
     val IconButtonSize: Dp,
 
-)
+    )
 
 
 val LocalCustomColors = staticCompositionLocalOf {
@@ -62,7 +64,9 @@ val LocalCustomColors = staticCompositionLocalOf {
         dgenGreen = Color.Unspecified,
         dgenAqua = Color.Unspecified,
         dgenOrche = Color.Unspecified,
-        dgenOcean = Color.Unspecified
+        dgenOcean = Color.Unspecified,
+        dgenTurqoise = Color.Unspecified,
+        dgenBurgendy = Color.Unspecified
     )
 }
 val LocalCustomTypography = staticCompositionLocalOf {
@@ -105,11 +109,13 @@ fun DgenTheme(
         dgenGreen = dgenGreen,
         dgenAqua = dgenAqua,
         dgenOrche = dgenOrche,
-        dgenOcean = dgenOcean
+        dgenOcean = dgenOcean,
+        dgenTurqoise = dgenTurqoise,
+        dgenBurgendy = dgenBurgendy
     )
     val customTypography = DgenTypography(
         header0 = TextStyle(
-            fontFamily = SourceSansProFamily,
+            fontFamily = PitagonsSans,
             color = dgenWhite,
             fontWeight = FontWeight.SemiBold,
             fontSize = 128.sp,
@@ -118,7 +124,7 @@ fun DgenTheme(
             textDecoration = TextDecoration.None
         ),
         header1 = TextStyle(
-            fontFamily = SourceSansProFamily,
+            fontFamily = PitagonsSans,
             color = dgenWhite,
             fontWeight = FontWeight.SemiBold,
             fontSize = 72.sp,
@@ -127,7 +133,7 @@ fun DgenTheme(
             textDecoration = TextDecoration.None
         ),
         header2 = TextStyle(
-            fontFamily = SourceSansProFamily,
+            fontFamily = PitagonsSans,
             color = dgenWhite,
             fontWeight = FontWeight.SemiBold,
             fontSize = 48.sp,
@@ -136,7 +142,7 @@ fun DgenTheme(
             textDecoration = TextDecoration.None
         ),
         header3 = TextStyle(
-            fontFamily = SourceSansProFamily,
+            fontFamily = PitagonsSans,
             color = dgenWhite,
             fontWeight = FontWeight.SemiBold,
             fontSize = 40.sp,
@@ -145,7 +151,7 @@ fun DgenTheme(
             textDecoration = TextDecoration.None
         ),
         body2 = TextStyle(
-            fontFamily = SourceSansProFamily,
+            fontFamily = PitagonsSans,
             color = dgenWhite,
             fontWeight = FontWeight.SemiBold,
             fontSize = 32.sp,
@@ -154,7 +160,7 @@ fun DgenTheme(
             textDecoration = TextDecoration.None
         ),
         body1 = TextStyle(
-            fontFamily = SourceSansProFamily,
+            fontFamily = PitagonsSans,
             color = dgenWhite,
             fontWeight = FontWeight.SemiBold,
             fontSize = 24.sp,
@@ -163,7 +169,7 @@ fun DgenTheme(
             textDecoration = TextDecoration.None
         ),
         button = TextStyle(
-            fontFamily = SourceSansProFamily,
+            fontFamily = PitagonsSans,
             color = dgenBlack,
             fontWeight = FontWeight.SemiBold,
             fontSize = 24.sp,
@@ -172,7 +178,7 @@ fun DgenTheme(
             textDecoration = TextDecoration.None
         ),
         label = TextStyle(
-            fontFamily = MonomaniacOneFamily,
+            fontFamily = SpaceMono,
             color = dgenWhite,
             fontWeight = FontWeight.Normal,
             fontSize = 16.sp,

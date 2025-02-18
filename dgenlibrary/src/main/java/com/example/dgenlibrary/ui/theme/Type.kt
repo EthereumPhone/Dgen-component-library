@@ -26,3 +26,16 @@ val Exo2Family = FontFamily(
     Font(R.font.exo2_medium, FontWeight.Normal),
     Font(R.font.exo2_semibold, FontWeight.SemiBold),
 )
+
+val SpaceMono = FontFamily(
+    Font(R.font.spacemono_bold, FontWeight.Bold),
+)
+
+
+val PitagonsSans = FontFamily(
+    Font(R.font.pitagonsanstext_bold, FontWeight.Bold),
+    Font(R.font.pitagonsanstext_medium, FontWeight.Medium),
+    Font(R.font.pitagonsanstext_regular, FontWeight.Normal),
+    Font(R.font.pitagonsanstext_semibold, FontWeight.SemiBold),
+    Font(R.font.pitagonsanstext_light, FontWeight.Light),
+)

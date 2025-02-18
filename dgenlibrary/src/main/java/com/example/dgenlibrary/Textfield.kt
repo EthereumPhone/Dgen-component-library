@@ -56,8 +56,6 @@ import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import com.example.dgenlibrary.ui.theme.DgenTheme
 
-
-
 @SuppressLint("SuspiciousIndentation")
 @Composable
 fun DgenBasicTextfield(
@@ -121,6 +119,90 @@ fun DgenBasicTextfield(
                     }
 
                 }
+                .onFocusChanged { focusState ->
+                    isFocused = focusState.isFocused
+                    isAnyFieldFocused.value = focusState.isFocused
+                }
+            ,
+            keyboardOptions = KeyboardOptions.Default.copy(
+                imeAction = ImeAction.Done,
+                keyboardType = keyboardtype
+            ),
+
+            keyboardActions = KeyboardActions(
+                onGo = {
+                    isFocused = true
+                },
+                onDone = {
+                    focusManager.clearFocus() // Fokus entfernen, wenn Enter gedrückt wird
+                    isFocused = false
+                }
+            ),
+            textStyle = textStyle,
+            visualTransformation = VisualTransformation.None, // Ensure no transformations
+            enabled = enabled,
+            readOnly = readOnly,
+            cursorBrush = SolidColor(Color.Unspecified),
+            minLines = minLines,
+            maxLines = maxLines,
+            interactionSource = interactionSource,
+            onTextLayout = { textLayoutResult = it }
+        )
+
+    }
+
+}
+
+@SuppressLint("SuspiciousIndentation")
+@Composable
+fun DgenBasicTextfieldTwo(
+    value: String,
+    onValueChange: (String) -> Unit,
+    keyboardtype: KeyboardType =  KeyboardType.Text,
+    isAnyFieldFocused: MutableState<Boolean>,
+    textfieldFocusManager: FocusManager? = null,
+    modifier: Modifier = Modifier,
+    enabled: Boolean = true,
+    readOnly: Boolean = false,
+    minLines: Int = 1,
+    interactionSource: MutableInteractionSource = remember { MutableInteractionSource() },
+    maxLines: Int = 100,
+    cursorColor: Color = DgenTheme.colors.dgenWhite,
+    cursorWidth: Dp = 12.dp,
+    cursorHeight: Dp = 32.dp,
+    textStyle: TextStyle = DgenTheme.typography.body2,
+    placeholder: @Composable() (() -> Unit)? = null,
+) {
+    var textLayoutResult by remember { mutableStateOf<TextLayoutResult?>(null) }
+
+    var isFocused by remember { mutableStateOf(false) }
+    val focusManager = textfieldFocusManager ?: LocalFocusManager.current
+
+    val cursorAlpha by rememberInfiniteTransition().animateFloat(
+        initialValue = 1f,
+        targetValue = 0f,
+        animationSpec = infiniteRepeatable(
+            animation = tween(durationMillis = 500, easing = LinearEasing),
+            repeatMode = RepeatMode.Reverse
+        )
+    )
+
+    Box(
+        modifier = modifier,
+        contentAlignment = Alignment.Center
+    ) {
+        if (value.isEmpty()) {
+            if (placeholder != null && !isFocused) {
+                placeholder()
+            }
+        }
+
+        BasicTextField(
+            value = value,
+            onValueChange = onValueChange,
+            modifier = modifier
+                .fillMaxWidth()
+
                 .onFocusChanged { focusState ->
                     isFocused = focusState.isFocused
                     isAnyFieldFocused.value = focusState.isFocused

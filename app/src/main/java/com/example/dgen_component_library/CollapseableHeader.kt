@@ -31,7 +31,6 @@ import androidx.compose.ui.zIndex
 import com.example.dgen_component_library.ExtensionDensity.toDp
 import com.example.dgen_component_library.ExtensionDensity.toPx
 import com.example.dgenlibrary.ui.theme.DgenTheme
-import com.example.dgenlibrary.ui.theme.horizontal_padding
 import kotlin.math.abs
 import kotlin.math.sign
 
