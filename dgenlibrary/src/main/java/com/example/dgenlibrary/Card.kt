@@ -63,6 +63,7 @@ import com.example.dgenlibrary.ui.theme.dgenWhite
 import java.text.DecimalFormat
 import java.text.DecimalFormatSymbols
 import androidx.compose.animation.core.keyframesWithSpline
+import androidx.compose.animation.togetherWith
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.zIndex
 import kotlinx.coroutines.delay
@@ -152,25 +153,6 @@ fun CardStack(
                 measurable.measure(constraints)
             }
 
-
-
-        //decide size
-//        val height = if (placeables.isNotEmpty())
-//            placeables.first().height
-//
-//        else 0
-//
-//
-//        val width = if (placeables.isNotEmpty())
-//            placeables.first().width
-//        else 0
-
-
-//        val totalHeight = if (placeables.isNotEmpty()) {
-//            placeables.first().height + (placeables.indices.sumOf { it * 10.dp.roundToPx() })
-//        } else {
-//            0
-//        }
 
         // Total height: first card + all offsets
         val totalHeight = if (placeables.isNotEmpty()) {
@@ -550,143 +532,168 @@ fun IsolatedCardView(){
             modifier = Modifier.fillMaxWidth(),
         ) {
 
-            Box {
-                Crossfade(
-                    modifier = Modifier.zIndex(zIndex1)
-                        .graphicsLayer {
-                            scaleX = scale
-                            scaleY = scale
-                            translationY = translateY
+            Box(
+                contentAlignment = Alignment.Center,
+            ){
 
-                            cameraDistance = 12f * density
-                        },
-                    targetState = isAnimating, label = "cross fade") { showCard ->
-                    if(showCard){
-                        Card(
-                            modifier = Modifier,
-                            frontSide = {
-                                Crossfade(
-                                    modifier = Modifier.fillMaxSize(),
-                                    targetState = isAnimating, label = "cross fade") { showSwap ->
+                    Crossfade(
+                        animationSpec = tween(300, if(isAnimating) 100 else 450),
+                        modifier = Modifier.zIndex(zIndex1)
+                            .graphicsLayer {
+                                scaleX = scale
+                                scaleY = scale
+                                translationY = translateY
 
-                                    Box(
-                                        contentAlignment = Alignment.Center,
+                                cameraDistance = 12f * density
+                            },
+                        targetState = isAnimating, label = "cross fade") { showCard ->
+                        if(showCard){
+                            Card(
+                                modifier = Modifier,
+                                frontSide = {
+                                    Crossfade(
                                         modifier = Modifier.fillMaxSize(),
-                                    ){
-                                        when (showSwap) {
-                                            true -> {
-                                                SecondSwapCardView(
-                                                    amount = 120.00,
-                                                    tokenName = "USDC",
-                                                    icon = R.drawable.usdc,
-                                                )
-                                            }
-                                            false-> {
-                                                IdleView(
-                                                    amount = 120.00,
-                                                    tokenName = "USDC",
-                                                    fiatAmount = 120.00,
-                                                    chainList = listOf(1,10,8453,42161),
-                                                    icon = R.drawable.usdc,
-                                                )
+                                        targetState = isAnimating, label = "cross fade") { showSwap ->
+
+                                        Box(
+                                            contentAlignment = Alignment.Center,
+                                            modifier = Modifier.fillMaxSize(),
+                                        ){
+                                            when (showSwap) {
+                                                true -> {
+                                                    SecondSwapCardView(
+                                                        amount = 120.00,
+                                                        tokenName = "USDC",
+                                                        icon = R.drawable.usdc,
+                                                    )
+                                                }
+                                                false-> {
+                                                    IdleView(
+                                                        amount = 120.00,
+                                                        tokenName = "USDC",
+                                                        fiatAmount = 120.00,
+                                                        chainList = listOf(1,10,8453,42161),
+                                                        icon = R.drawable.usdc,
+                                                    )
+                                                }
                                             }
                                         }
                                     }
-                                }
 
-                            },
-                            backgroundColor = Color(0xFF9C27B0),
-                            backSide = {}
-                        )
+                                },
+                                backgroundColor = Color(0xFF9C27B0),
+                                backSide = {}
+                            )
+                        }
+
                     }
 
-                }
+
+                    Card(
+                        modifier = Modifier
+                            .zIndex(zIndex2)
+                            .graphicsLayer {
+                                scaleX = scale
+                                scaleY = scale
+                                rotationY = rotation
+                                translationY = -translateY
+
+                                cameraDistance = 12f * density
+                            },
+                        frontSide = {
 
 
-
-
-
-                Card(
-                    modifier = Modifier
-                        .zIndex(zIndex2)
-                        .graphicsLayer {
-                            scaleX = scale
-                            scaleY = scale
-                            rotationY = rotation
-                            translationY = -translateY
-
-                            cameraDistance = 12f * density
-                        },
-                    frontSide = {
-
-
-                        Crossfade(
-                            modifier = Modifier.fillMaxSize(),
-                            targetState = isAnimating, label = "cross fade") { showSwap ->
-                            Box(
-                                contentAlignment = Alignment.Center,
+                            Crossfade(
                                 modifier = Modifier.fillMaxSize(),
-                            ){
-                                when (showSwap) {
-                                    true -> {
-                                        SwapCardView(
-                                            amount = 120.00,
-                                            tokenName = "USDC",
-                                            icon = R.drawable.usdc,
-                                        )
-                                    }
-                                    false-> {
-                                        IdleView(
-                                            amount = 120.00,
-                                            tokenName = "USDC",
-                                            fiatAmount = 120.00,
-                                            chainList = listOf(1,10,8453,42161),
-                                            icon = R.drawable.usdc,
-                                        )
+                                targetState = isAnimating, label = "cross fade") { showSwap ->
+                                Box(
+                                    contentAlignment = Alignment.Center,
+                                    modifier = Modifier.fillMaxSize(),
+                                ){
+                                    when (showSwap) {
+                                        true -> {
+                                            SwapCardView(
+                                                amount = 120.00,
+                                                tokenName = "USDC",
+                                                icon = R.drawable.usdc,
+                                            )
+                                        }
+                                        false-> {
+                                            IdleView(
+                                                amount = 120.00,
+                                                tokenName = "USDC",
+                                                fiatAmount = 120.00,
+                                                chainList = listOf(1,10,8453,42161),
+                                                icon = R.drawable.usdc,
+                                            )
+                                        }
                                     }
                                 }
                             }
-                        }
-                    },
-                    backgroundColor = Color(0xFF1E5A9C),
-                    rotated = rotated,
-                    rotation = rotation,
-                    backSide = {
+                        },
+                        backgroundColor = Color(0xFF1E5A9C),
+                        rotated = rotated,
+                        rotation = rotation,
+                        backSide = {
 
-                        Box(
-                            modifier = Modifier
-                                .fillMaxSize()
-                                .graphicsLayer {
-                                    rotationY = -180f
-                                },
-                            contentAlignment = Alignment.Center
-                        ) {
+                            Box(
+                                modifier = Modifier
+                                    .fillMaxSize()
+                                    .graphicsLayer {
+                                        rotationY = -180f
+                                    },
+                                contentAlignment = Alignment.Center
+                            ) {
 
-                            if(cardState == TOKENACTION.SEND){
-                                SendCardView(
-                                    amount = 120.00,
-                                    tokenName = "USDC",
-                                    chainList = listOf(1,10,8453,42161),
+                                if(cardState == TOKENACTION.SEND){
+                                    SendCardView(
+                                        amount = 120.00,
+                                        tokenName = "USDC",
+                                        chainList = listOf(1,10,8453,42161),
 
+                                        )
+                                }
+
+                                if(cardState == TOKENACTION.SWAP){
+                                    SwapCardView(
+                                        amount = 120.00,
+                                        tokenName = "USDC",
+                                        icon = R.drawable.usdc
                                     )
+                                }
+
+
                             }
-
-                            if(cardState == TOKENACTION.SWAP){
-                                SwapCardView(
-                                    amount = 120.00,
-                                    tokenName = "USDC",
-                                    icon = R.drawable.usdc
-                                )
-                            }
-
-
-                        }
 
 //                        }
 
-                    }
-                )
+                        }
+                    )
 
+
+                Crossfade(modifier = Modifier.graphicsLayer{ translationY = -60f}.zIndex(5f), targetState = isAnimating, animationSpec = if(isAnimating) tween(600, 800) else tween(200, 0)) { visible ->
+                    if (visible){
+                        CircleButton(
+                            icon = {
+                                Icon(
+                                    modifier = Modifier.graphicsLayer(rotationZ = 90f).size(24.dp),
+                                    painter = painterResource(R.drawable.baseline_swap_horiz_24),
+                                    contentDescription = "Swap Icon"
+                                )
+                            },
+                            containerColor = dgenOcean,
+                            contentColor = dgenTurqoise,
+                            buttonSize = 40.dp,
+                            onClick = {
+                                //rotated = !rotated
+                                //isAnimating = !isAnimating
+                                //startSwapAnimation = !startSwapAnimation
+                                //hasClicked = true
+
+                            }
+                        )
+                    }
+                }
             }
 
 
@@ -748,156 +755,8 @@ fun IsolatedCardView(){
                         }
                     )
                 }
-
-                AnimatedVisibility(
-                    visible = (cardState == TOKENACTION.IDLE) || (cardState == TOKENACTION.SWAP),
-                    enter = fadeIn(tween(300)),
-                    exit = fadeOut(tween(300))
-                ) {
-                    CircleButton(
-                        icon = {
-                            Icon(
-                                modifier = Modifier.size(24.dp),
-                                painter = painterResource(R.drawable.baseline_swap_horiz_24),
-                                contentDescription = "Swap Icon"
-                            )
-                        },
-                        containerColor = if(cardState == TOKENACTION.SWAP) dgenTurqoise else dgenOcean,
-                        contentColor = if(cardState == TOKENACTION.SWAP)  dgenOcean else dgenTurqoise ,
-                        buttonSize = 48.dp,
-                        onClick = {
-                            //rotated = !rotated
-                            isAnimating = !isAnimating
-                            //startSwapAnimation = !startSwapAnimation
-                            hasClicked = true
-                            cardState = TOKENACTION.SWAP
-                        }
-                    )
-                }
-
-                AnimatedVisibility(
-                    visible = (cardState == TOKENACTION.IDLE) || (cardState == TOKENACTION.GET),
-                    enter = fadeIn(tween(300)),
-                    exit = fadeOut(tween(300))
-                ) {
-                    CircleButton(
-                        icon = {
-                            Icon(
-                                modifier = Modifier.size(24.dp),
-                                painter = painterResource(R.drawable.baseline_add_24),
-                                contentDescription = "Add Icon"
-                            )
-                        },
-                        containerColor = if(cardState == TOKENACTION.GET) dgenTurqoise else dgenOcean,
-                        contentColor = if(cardState == TOKENACTION.GET)  dgenOcean else dgenTurqoise ,
-                        buttonSize = 48.dp,
-                        onClick = {}
-                    )
-                }
-
-
-
             }
         }
     }
 
 }
-
-
-//@Preview(
-//    showBackground = true,
-//    widthDp = 400,
-//    heightDp = 500,
-//)
-//@Composable
-//fun StackedColumnPreview(){
-//
-//    val list = listOf(
-//        Asset(
-//            amount = 120.00,
-//            tokenName = "USDC",
-//            fiatAmount = 120.00,
-//            backgroundColor = Color(0xFF1E5A9C),
-//            chainList = listOf(1,10,8453,42161),
-//            icon = R.drawable.usdc
-//
-//        ),
-//        Asset(
-//            amount = 120.00,
-//            tokenName = "USDC",
-//            fiatAmount = 120.00,
-//            backgroundColor = Color(0xFF9C27B0),
-//            chainList = listOf(1,10,8453,42161),
-//            icon = R.drawable.usdc
-//
-//        ),
-//        Asset(
-//            amount = 120.00,
-//            tokenName = "USDC",
-//            fiatAmount = 120.00,
-//            backgroundColor = Color(0xFF8BC34A),
-//            chainList = listOf(1,10,8453,42161),
-//            icon = R.drawable.usdc
-//
-//        ),
-//        Asset(
-//            amount = 120.00,
-//            tokenName = "USDC",
-//            fiatAmount = 120.00,
-//            backgroundColor = Color(0xFFE91E63),
-//            chainList = listOf(1,10,8453,42161),
-//            icon = R.drawable.usdc
-//
-//        ),
-//        Asset(
-//            amount = 120.00,
-//            tokenName = "USDC",
-//            fiatAmount = 120.00,
-//            backgroundColor = Color(0xFF009688),
-//            chainList = listOf(1,10,8453,42161),
-//            icon = R.drawable.usdc
-//
-//        ),
-//        Asset(
-//            amount = 120.00,
-//            tokenName = "USDC",
-//            fiatAmount = 120.00,
-//            backgroundColor = Color(0xFFFFEB3B),
-//            chainList = listOf(1,10,8453,42161),
-//            icon = R.drawable.usdc
-//
-//        ),
-//        Asset(
-//            amount = 120.00,
-//            tokenName = "USDC",
-//            fiatAmount = 120.00,
-//            backgroundColor = Color(0xFF00BCD4),
-//            chainList = listOf(1,10,8453,42161),
-//            icon = R.drawable.usdc
-//
-//        ),
-//        Asset(
-//            amount = 120.00,
-//            tokenName = "USDC",
-//            fiatAmount = 120.00,
-//            backgroundColor = Color(0xFFF44336),
-//            chainList = listOf(1,10,8453,42161),
-//            icon = R.drawable.usdc
-//
-//        ),
-//        Asset(
-//            amount = 120.00,
-//            tokenName = "USDC",
-//            fiatAmount = 120.00,
-//            backgroundColor = Color(0xFFF44336),
-//            chainList = listOf(1,10,8453,42161),
-//            icon = R.drawable.usdc
-//
-//        )
-//    )
-//
-//    StackedColumn(
-//        modifier= Modifier.background(Color.Red),
-//        items = list
-//    )
-//}

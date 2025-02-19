@@ -14,6 +14,7 @@ espresso = "3.5.1"
 sharedElements = "1.2.0-beta01"
 androidxTestRunner = "1.5.2"
 composeAnimation = "1.6.0"
+animationAndroid = "1.7.0-alpha07"
 
 [libraries]
 core-ktx = { group = "androidx.core", name = "core-ktx", version.ref = "coreKtx" }
@@ -45,6 +46,7 @@ compose-shared-elements = { group = "com.github.andkulikov", name = "compose-sha
 
 #Animation
 androidx-compose-animation-core = { module = "androidx.compose.animation:animation-core", version.ref = "composeAnimation" }
+androidx-animation-android = { group = "androidx.compose.animation", name = "animation-android", version.ref = "animationAndroid" }
 
 [plugins]
 android-application = { id = "com.android.application", version = "8.2.0" }

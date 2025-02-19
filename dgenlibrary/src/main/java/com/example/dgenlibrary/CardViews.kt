@@ -185,8 +185,7 @@ fun SendCardView(
                         fontFamily = PitagonsSans,
                         color = dgenWhite,
                         fontWeight = FontWeight.SemiBold,
-                        fontSize = 24.sp,
-
+                        fontSize = 48.sp,
                         letterSpacing = 0.sp,
                         textDecoration = TextDecoration.None
                     ),

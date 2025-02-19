@@ -49,6 +49,7 @@ dependencies {
     implementation(libs.material3)
 
     implementation(libs.compose.ui.tooling.preview)
+    implementation(libs.androidx.animation.android)
     debugImplementation(libs.compose.ui.tooling)
 
     // Optional Google Fonts (Uncomment if needed)
@@ -59,4 +60,5 @@ dependencies {
     androidTestImplementation(libs.androidx.test.runner) // <-- Now using runner
     androidTestImplementation(libs.espresso.core)
     implementation(libs.androidx.compose.animation.core)
+
 }
