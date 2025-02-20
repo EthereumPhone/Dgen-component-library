@@ -1,7 +1,10 @@
 package com.example.dgenlibrary
 
 import android.annotation.SuppressLint
+import androidx.compose.animation.AnimatedContent
 import androidx.compose.animation.ExperimentalAnimationApi
+import androidx.compose.animation.ExperimentalSharedTransitionApi
+import androidx.compose.animation.SharedTransitionLayout
 import androidx.compose.animation.core.FastOutSlowInEasing
 import androidx.compose.animation.core.LinearOutSlowInEasing
 import androidx.compose.animation.core.animateFloatAsState
@@ -75,44 +78,7 @@ import com.example.dgenlibrary.ui.theme.dgenWhite
 import kotlin.math.abs
 
 
-@Composable
-fun MyBasicColumn(
-    modifier: Modifier = Modifier,
-    content: @Composable () -> Unit
-) {
-    val scrollState = rememberScrollState()
 
-    Layout(
-        modifier = modifier.verticalScroll(scrollState),
-        content = content
-    ) { measurables, constraints ->
-        
-
-        var scaleFactor = 0.9f  // Start with full size
-        // List of measured children
-        val placeables = measurables.map { measurable ->
-            // Measure each children
-
-            measurable.measure(constraints)
-        }
-
-
-        // Set the size of the layout as big as it can
-        layout(constraints.maxWidth, constraints.maxHeight) {
-            // Track the y co-ord we have placed children up to
-            var yPosition = 0
-
-            // Place children in the parent layout
-            placeables.forEach { placeable ->
-                // Position item on the screen
-                placeable.placeRelative(x =  (constraints.maxWidth - placeable.width) / 2, y = yPosition)
-
-                // Record the y co-ord placed up to
-                yPosition += (placeable.height*0.20f).toInt()
-            }
-        }
-    }
-}
 @SuppressLint("RestrictedApi")
 @Composable
 fun MyCardCarousel(
@@ -134,7 +100,7 @@ fun MyCardCarousel(
             state = listState,
             modifier = modifier.fillMaxSize().zIndex(3f),
             verticalArrangement = Arrangement.spacedBy((-240).dp), // Overlapping effect
-            contentPadding = PaddingValues(top = 50.dp, bottom =50.dp) // Ensures enough space for scrolling
+            contentPadding = PaddingValues(top = 60.dp, bottom =40.dp) // Ensures enough space for scrolling
         ) {
             itemsIndexed(assets) { index, item ->
                 val scrollOffset = listState.firstVisibleItemIndex + listState.firstVisibleItemScrollOffset / 1000f
@@ -187,13 +153,6 @@ fun MyCardCarousel(
 
 
 
-
-
-@Preview(
-    showBackground = true,
-    widthDp = 447,
-    heightDp = 447,
-)
 @Composable
 fun MyCardColumnPreview() {
 
@@ -287,7 +246,7 @@ fun MyCardColumnPreview() {
 
         ) {
             MyCardCarousel(
-                modifier = Modifier.padding(bottom = 16.dp),
+                modifier = Modifier.padding(bottom = 24.dp),
                 assets = list
             )
         }
@@ -546,6 +505,32 @@ fun MyCardColumnPreview() {
 
 }
 
+
+
+@OptIn(ExperimentalSharedTransitionApi::class)
+@Preview(
+    showBackground = true,
+    widthDp = 447,
+    heightDp = 447,
+)
+@Composable
+fun WalletPreview(){
+    var showDetails by remember {
+        mutableStateOf(false)
+    }
+    SharedTransitionLayout {
+        AnimatedContent(
+            showDetails,
+            label = "basic_transition"
+        ) { targetState ->
+            if (targetState) {
+                MyCardColumnPreview()
+            } else {
+                IsolatedCardView()
+            }
+        }
+    }
+}
 
 
 
