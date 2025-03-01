@@ -10,6 +10,7 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
@@ -51,6 +52,8 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.dgenlibrary.ui.theme.PitagonsSans
+import com.example.dgenlibrary.ui.theme.SpaceMono
+import com.example.dgenlibrary.ui.theme.dgenTurqoise
 import com.example.dgenlibrary.ui.theme.dgenWhite
 import kotlinx.coroutines.delay
 import java.text.DecimalFormat
@@ -63,7 +66,7 @@ import java.util.Locale
 fun SendCardView(
     amount: Double,
     tokenName: String,
-    chainList: List<Int>,
+    //chainList: List<Int>,
 ){
 
     val decimalFormat = DecimalFormat("0.00").apply {
@@ -92,8 +95,8 @@ fun SendCardView(
         contentAlignment = Alignment.Center
     ) {
         Image(
-            modifier = Modifier.size(80.dp),
-            painter = painterResource(R.drawable.usdc),
+            modifier = Modifier.size(400.dp).offset(x = 100.dp, y = 40.dp),
+            painter = painterResource(R.drawable.globe_card),
             contentDescription = "Ethereum"
         )
     }
@@ -115,8 +118,8 @@ fun SendCardView(
                 Text(
                     text = "SEND $tokenName",
                     style = TextStyle(
-                        fontFamily = PitagonsSans,
-                        color = dgenWhite,
+                        fontFamily = SpaceMono,
+                        color = dgenTurqoise,
                         fontWeight = FontWeight.SemiBold,
                         fontSize = 24.sp,
 
@@ -126,10 +129,10 @@ fun SendCardView(
                 )
             }
 
-            SelectableIconRow(
-                chainList,
-                {}
-            )
+//            SelectableIconRow(
+//                chainList,
+//                {}
+//            )
 
         }
 
@@ -144,7 +147,7 @@ fun SendCardView(
                         text = "0.0",
                         style = TextStyle(
                             fontFamily = PitagonsSans,
-                            color = dgenWhite,
+                            color = dgenTurqoise,
                             fontWeight = FontWeight.SemiBold,
                             fontSize = 48.sp,
 
@@ -183,7 +186,7 @@ fun SendCardView(
                     cursorBrush = SolidColor(Color.Transparent), // Hide default cursor
                     textStyle = TextStyle(
                         fontFamily = PitagonsSans,
-                        color = dgenWhite,
+                        color = dgenTurqoise,
                         fontWeight = FontWeight.SemiBold,
                         fontSize = 48.sp,
                         letterSpacing = 0.sp,
@@ -218,7 +221,7 @@ fun SendCardView(
                         text = "Address",
                         style = TextStyle(
                             fontFamily = PitagonsSans,
-                            color = dgenWhite,
+                            color = dgenTurqoise,
                             fontWeight = FontWeight.SemiBold,
                             fontSize = 24.sp,
 
@@ -236,7 +239,7 @@ fun SendCardView(
                     cursorBrush = SolidColor(Color.Transparent), // Hide default cursor
                     textStyle = TextStyle(
                         fontFamily = PitagonsSans,
-                        color = dgenWhite,
+                        color = dgenTurqoise,
                         fontWeight = FontWeight.SemiBold,
                         fontSize = 24.sp,
 
@@ -271,8 +274,8 @@ fun SendCardView(
                 Text(
                     text= "MAX",
                     style = TextStyle(
-                        fontFamily = PitagonsSans,
-                        color = dgenWhite,
+                        fontFamily = SpaceMono,
+                        color = dgenTurqoise,
                         fontWeight = FontWeight.Normal,
                         fontSize = 12.sp,
                         lineHeight = 12.sp,
@@ -281,10 +284,10 @@ fun SendCardView(
                     )
                 )
                 Text(
-                    text= formatSmart(amount),
+                    text= abbreviateNumber(amount),
                     style = TextStyle(
                         fontFamily = PitagonsSans,
-                        color = dgenWhite,
+                        color = dgenTurqoise,
                         fontWeight = FontWeight.SemiBold,
                         fontSize = 16.sp,
                         lineHeight = 16.sp,
@@ -294,79 +297,6 @@ fun SendCardView(
                 )
             }
 
-        }
-    }
-}
-
-
-@Composable
-fun SelectableIconRow(
-    icons: List<Int>,  // Liste der Icons
-    onValueChange: (Int) -> Unit // Callback für den ausgewählten Wert
-) {
-    var selectedIndex by remember { mutableStateOf(-1) }  // Index des ausgewählten Buttons
-
-    Row(
-        modifier = Modifier,
-        horizontalArrangement = Arrangement.spacedBy(2.dp)
-    ) {
-        icons.forEachIndexed { index, icon ->
-            IconButton(
-                onClick = {
-                    if (selectedIndex != index) { // Verhindert das Deselektieren
-                        selectedIndex = index
-                        onValueChange(index)
-                    }
-
-                    //onValueChange(index) // Gibt den ausgewählten Wert zurück
-                },
-                modifier = Modifier
-                    .border(
-                        width = if (index == selectedIndex) 2.dp else 0.dp, // Weißer Rand für Selektion
-                        color = if (index == selectedIndex) Color.White else Color.Transparent,
-                        shape = CircleShape
-                    ).size(32.dp)
-
-            ) {
-
-                    when(icon){
-                        1 -> {
-
-                            Image(
-                                modifier = Modifier.size(24.dp),
-                                painter = painterResource(R.drawable.mainnet),
-                                contentDescription = "Ethereum"
-                            )
-                        }
-                        10 -> {
-                            Image(
-                                modifier = Modifier.size(24.dp),
-                                painter = painterResource(R.drawable.optimism),
-                                contentDescription = "Ethereum"
-                            )
-                        }
-                        8453 -> {
-                            Image(
-                                modifier = Modifier.size(24.dp),
-                                painter = painterResource(R.drawable.base),
-                                contentDescription = "Ethereum"
-                            )
-                        }
-                        42161 -> {
-                            Image(
-                                modifier = Modifier.size(24.dp),
-                                painter = painterResource(R.drawable.arbitrum),
-                                contentDescription = "Ethereum"
-                            )
-                        }
-                    }
-
-//                Icon(
-//                    painter = painterResource(icon),
-//                    contentDescription = "Icon $index",
-//                    tint = if (index == selectedIndex) Color.White else Color.Gray
-//                )
-            }
         }
     }
 }
@@ -383,6 +313,6 @@ fun SendCardPreviewView(){
     SendCardView(
         amount = 120.00,
         tokenName = "USDC",
-        chainList = listOf(1,10,8453,42161)
+//        chainList = listOf(1,10,8453,42161)
     )
 }

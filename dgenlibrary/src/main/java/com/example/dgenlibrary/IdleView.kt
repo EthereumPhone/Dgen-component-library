@@ -1,12 +1,14 @@
 package com.example.dgenlibrary
 
 import androidx.compose.foundation.Image
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyRow
@@ -21,9 +23,12 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextDecoration
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.dgenlibrary.ui.theme.PitagonsSans
+import com.example.dgenlibrary.ui.theme.SpaceMono
+import com.example.dgenlibrary.ui.theme.dgenTurqoise
 import com.example.dgenlibrary.ui.theme.dgenWhite
 import java.text.DecimalFormat
 import java.text.DecimalFormatSymbols
@@ -35,7 +40,6 @@ fun IdleView(
     amount: Double,
     tokenName: String,
     fiatAmount: Double,
-    chainList: List<Int>,
     icon: Int,
 ) {
 
@@ -44,12 +48,12 @@ fun IdleView(
     }
 
     Box(
-        modifier = Modifier.alpha(0.25f),
+        modifier = Modifier.alpha(0.4f),
         contentAlignment = Alignment.Center
     ) {
         Image(
-            modifier = Modifier.size(80.dp),
-            painter = painterResource(R.drawable.usdc),
+            modifier = Modifier.size(400.dp).offset(x = 100.dp, y = 40.dp),
+            painter = painterResource(R.drawable.mainnet),
             contentDescription = "Ethereum"
         )
     }
@@ -58,31 +62,32 @@ fun IdleView(
         verticalArrangement =  Arrangement.SpaceBetween,
         modifier = Modifier
             .fillMaxSize()
-            .padding(vertical = 8.dp, horizontal = 16.dp),
+            .padding(top = 16.dp,bottom = 8.dp, start = 16.dp, end = 16.dp),
     ){
 
         Row(
             modifier = Modifier.fillMaxWidth(),
+            verticalAlignment = Alignment.CenterVertically,
             horizontalArrangement = Arrangement.SpaceBetween
         ){
             Row(
-                verticalAlignment = Alignment.Bottom,
+                verticalAlignment = Alignment.CenterVertically,
                 horizontalArrangement = Arrangement.spacedBy(6.dp)
             ) {
 
                 Image(
                     modifier = Modifier
                         .padding(bottom = 2.dp)
-                        .size(28.dp),
+                        .size(40.dp),
                     painter = painterResource(icon),
                     contentDescription = "Ethereum"
                 )
                 Text(
                     text = tokenName,
                     style = TextStyle(
-                        fontFamily = PitagonsSans,
-                        color = dgenWhite,
-                        fontWeight = FontWeight.SemiBold,
+                        fontFamily = SpaceMono,
+                        color = dgenTurqoise,
+                        fontWeight = FontWeight.Normal,
                         fontSize = 24.sp,
 
                         letterSpacing = 0.sp,
@@ -97,8 +102,8 @@ fun IdleView(
                 style = TextStyle(
                     fontFamily = PitagonsSans,
                     color = dgenWhite,
-                    fontWeight = FontWeight.SemiBold,
-                    fontSize = 24.sp,
+                    fontWeight = FontWeight.Medium,
+                    fontSize = 20.sp,
 
                     textDecoration = TextDecoration.None
                 )
@@ -110,52 +115,14 @@ fun IdleView(
             horizontalArrangement = Arrangement.SpaceBetween,
             verticalAlignment = Alignment.Bottom
         ){
-            LazyRow (
-                modifier = Modifier.padding(bottom = 5.dp),
-                horizontalArrangement = Arrangement.spacedBy(4.dp)
-            ){
-                items(chainList){ item ->
-                    when(item){
-                        1 -> {
-
-                            Image(
-                                modifier = Modifier.size(24.dp),
-                                painter = painterResource(R.drawable.mainnet),
-                                contentDescription = "Ethereum"
-                            )
-                        }
-                        10 -> {
-                            Image(
-                                modifier = Modifier.size(24.dp),
-                                painter = painterResource(R.drawable.optimism),
-                                contentDescription = "Ethereum"
-                            )
-                        }
-                        8453 -> {
-                            Image(
-                                modifier = Modifier.size(24.dp),
-                                painter = painterResource(R.drawable.base),
-                                contentDescription = "Ethereum"
-                            )
-                        }
-                        42161 -> {
-                            Image(
-                                modifier = Modifier.size(24.dp),
-                                painter = painterResource(R.drawable.arbitrum),
-                                contentDescription = "Ethereum"
-                            )
-                        }
-                    }
-                }
-            }
 
             Text(
                 text= formatSmart(amount),
                 style = TextStyle(
                     fontFamily = PitagonsSans,
-                    color = dgenWhite,
+                    color = dgenTurqoise,
                     fontWeight = FontWeight.SemiBold,
-                    fontSize = 40.sp,
+                    fontSize = 64.sp,
                     lineHeight = 24.sp,
                     letterSpacing = 0.sp,
                     textDecoration = TextDecoration.None
@@ -163,4 +130,20 @@ fun IdleView(
             )
         }
     }
+}
+
+
+@Preview(
+    widthDp = 447,
+    heightDp = 447,
+)
+@Composable
+fun IdlePreview(){
+    IdleView(
+        amount = 0.13,
+        tokenName = "USDC",
+        fiatAmount = 209.47,
+        icon = R.drawable.usdc
+
+    )
 }

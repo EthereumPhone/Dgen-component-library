@@ -1,11 +1,15 @@
 package com.example.dgenlibrary
 
 import android.annotation.SuppressLint
+import android.content.Context
 import android.graphics.drawable.Drawable
 import android.util.Log
 import androidx.compose.animation.AnimatedContent
 import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.animation.AnimatedVisibilityScope
 import androidx.compose.animation.Crossfade
+import androidx.compose.animation.ExperimentalSharedTransitionApi
+import androidx.compose.animation.SharedTransitionScope
 import androidx.compose.animation.animateContentSize
 import androidx.compose.animation.core.ExperimentalAnimationSpecApi
 import androidx.compose.animation.core.FastOutLinearInEasing
@@ -63,20 +67,26 @@ import com.example.dgenlibrary.ui.theme.dgenWhite
 import java.text.DecimalFormat
 import java.text.DecimalFormatSymbols
 import androidx.compose.animation.core.keyframesWithSpline
+import androidx.compose.animation.scaleIn
+import androidx.compose.animation.scaleOut
 import androidx.compose.animation.togetherWith
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.ui.input.pointer.pointerInput
+import androidx.compose.ui.text.AnnotatedString
 import androidx.compose.ui.zIndex
 import kotlinx.coroutines.delay
 import java.util.Locale
 
+@SuppressLint("SuspiciousIndentation")
+@OptIn(ExperimentalSharedTransitionApi::class)
 @Composable
 fun Card(
     modifier: Modifier = Modifier,
-    backgroundColor: Color,
-    rotated: Boolean = false,
     rotation: Float = 0f,
     frontSide: @Composable () -> Unit = {},
-    backSide: @Composable () -> Unit = {}
+    backSide: @Composable () -> Unit = {},
+//    sharedTransitionScope: SharedTransitionScope,
+//    animatedVisibilityScope: AnimatedVisibilityScope,
 ){
     val decimalFormat = DecimalFormat("0.00").apply {
         decimalFormatSymbols = DecimalFormatSymbols(Locale.US) // Forces the decimal point
@@ -85,24 +95,27 @@ fun Card(
     val frontVisible = rotation < 90f
     val backVisible = rotation > 90f
 
-    Surface(
-        color = backgroundColor,
-        modifier = modifier
-            .aspectRatio(16f / 9f)
-            .fillMaxWidth()
-            .clip(RoundedCornerShape(8.dp))
-            .border(1.dp, Color.White, RoundedCornerShape(8.dp))
-    ) {
+//    with(sharedTransitionScope) {
+        Surface(
+            color = dgenOcean,
+            modifier = modifier
+                .aspectRatio(16f / 9f)
+                .fillMaxWidth()
+                .clip(RoundedCornerShape(0.dp))
+                .border(1.dp, Color.White, RoundedCornerShape(0.dp))
+        ) {
 
 
-        if (frontVisible) {
-            frontSide()
+            if (frontVisible) {
+                frontSide()
+            }
+            if (backVisible) {
+                backSide()
+            }
+
         }
-        if (backVisible) {
-            backSide()
-        }
+//    }
 
-    }
 }
 
 fun formatSmart(value: Double): String {
@@ -113,21 +126,38 @@ fun formatSmart(value: Double): String {
     }
 }
 
+fun abbreviateNumber(value: Double): String {
+    val suffixes = arrayOf("", "K", "M", "B")
+    var num = value
+    var index = 0
+
+    while (num >= 1000 && index < suffixes.size - 1) {
+        num /= 1000
+        index++
+    }
+
+    // Ensure US number format with commas and dots
+    val symbols = DecimalFormatSymbols(Locale.US)
+    val decimalFormat = DecimalFormat("#,##0.##", symbols)
+
+    return "${decimalFormat.format(num)}${suffixes[index]}"
+}
 
 @Preview
 @Composable
 fun PreviewCard(){
     Card(
-        backgroundColor = Color(0xFF1E5A9C),
+//        backgroundColor = Color(0xFF1E5A9C),
         frontSide = {
             IdleView(
-                amount = 120.00,
+                amount = 0.13,
                 tokenName = "USDC",
-                fiatAmount = 120.00,
-                chainList = listOf(1,10,8453,42161),
+                fiatAmount = 209.47,
+//                chainList = listOf(1,10,8453,42161),
                 icon = R.drawable.usdc,
             )
-        }
+        },
+//        cardId = "asset_1"
 
     )
 }
@@ -148,12 +178,18 @@ enum class TOKENACTION{
     GET
 }
 
+@OptIn(ExperimentalSharedTransitionApi::class)
 @Composable
-fun IsolatedCardView(){
+fun IsolatedSendCardView(
+    cardId: String,
+    asset: Asset,
+    onNavigateBack: () -> Unit,
+    modifier: Modifier = Modifier,
+    sharedTransitionScope: SharedTransitionScope,
+    animatedVisibilityScope: AnimatedVisibilityScope
+){
 
     var rotated by remember { mutableStateOf(false) }
-
-    var startSwapAnimation by remember { mutableStateOf(false) }
 
     val rotation by animateFloatAsState(
         targetValue = if (rotated) 180f else 0f,
@@ -170,61 +206,6 @@ fun IsolatedCardView(){
         label = "ScaleAnimation"
     )
     var translateY by remember { mutableStateOf(0f) }
-
-    LaunchedEffect(isAnimating) {
-        if (isAnimating && hasClicked) {
-            Log.d("SWAP", "true")
-            // Expand
-            animate(
-                initialValue = 0f,
-                targetValue = 150f,
-                animationSpec = tween(durationMillis = 300, easing = FastOutSlowInEasing)
-            ) { value, _ -> translateY = value }
-
-            delay(150)
-            // Contract
-            animate(
-                initialValue = 150f,
-                targetValue = 70f,
-                animationSpec = tween(durationMillis = 300, easing = FastOutSlowInEasing)
-            ) { value, _ -> translateY = value }
-            hasClicked = false
-        } else {
-            if(hasClicked){
-                Log.d("SWAP", "Else")
-                animate(
-                    initialValue = 125f,
-                    targetValue = 150f,
-                    animationSpec = tween(durationMillis = 300, easing = FastOutSlowInEasing)
-                ) { value, _ -> translateY = value }
-
-                delay(100)
-                // Contract
-                animate(
-                    initialValue = 150f,
-                    targetValue = 0f,
-                    animationSpec = tween(durationMillis = 300, easing = FastOutSlowInEasing)
-                ) { value, _ -> translateY = value }
-
-                hasClicked = false
-            }
-        }
-    }
-
-    var zIndex1 by remember { mutableStateOf(1f) } // Default zIndex
-
-    var zIndex2 by remember { mutableStateOf(2f) } // Default zIndex
-
-    LaunchedEffect(isAnimating) {
-        if (isAnimating) {
-            delay(350) // Wait for animation duration
-            zIndex1 = 2f // Change zIndex after animation finishes
-            zIndex2 = 1f // Reset when animation resets
-        } else {
-            zIndex1 = 1f // Change zIndex after animation finishes
-            zIndex2 = 2f // Reset when animation resets
-        }
-    }
 
 
     var cardState by remember { mutableStateOf(TOKENACTION.IDLE) }
@@ -244,67 +225,11 @@ fun IsolatedCardView(){
             verticalArrangement = Arrangement.spacedBy(24.dp),
             modifier = Modifier.fillMaxWidth(),
         ) {
-
-            Box(
-                contentAlignment = Alignment.Center,
-            ){
-
-                    Crossfade(
-                        animationSpec = tween(300, if(isAnimating) 100 else 450),
-                        modifier = Modifier.zIndex(zIndex1)
-                            .graphicsLayer {
-                                scaleX = scale
-                                scaleY = scale
-                                translationY = translateY
-
-                                cameraDistance = 12f * density
-                            },
-                        targetState = isAnimating, label = "cross fade") { showCard ->
-                        if(showCard){
-                            Card(
-                                modifier = Modifier,
-                                frontSide = {
-                                    Crossfade(
-                                        modifier = Modifier.fillMaxSize(),
-                                        targetState = isAnimating, label = "cross fade") { showSwap ->
-
-                                        Box(
-                                            contentAlignment = Alignment.Center,
-                                            modifier = Modifier.fillMaxSize(),
-                                        ){
-                                            when (showSwap) {
-                                                true -> {
-                                                    SecondSwapCardView(
-                                                        amount = 120.00,
-                                                        tokenName = "USDC",
-                                                        icon = R.drawable.usdc,
-                                                    )
-                                                }
-                                                false-> {
-                                                    IdleView(
-                                                        amount = 120.00,
-                                                        tokenName = "USDC",
-                                                        fiatAmount = 120.00,
-                                                        chainList = listOf(1,10,8453,42161),
-                                                        icon = R.drawable.usdc,
-                                                    )
-                                                }
-                                            }
-                                        }
-                                    }
-
-                                },
-                                backgroundColor = Color(0xFF9C27B0),
-                                backSide = {}
-                            )
-                        }
-
-                    }
-
-
+            
                     Card(
+//                        cardId = cardId,
                         modifier = Modifier
-                            .zIndex(zIndex2)
+
                             .graphicsLayer {
                                 scaleX = scale
                                 scaleY = scale
@@ -314,38 +239,12 @@ fun IsolatedCardView(){
                                 cameraDistance = 12f * density
                             },
                         frontSide = {
-
-
-                            Crossfade(
-                                modifier = Modifier.fillMaxSize(),
-                                targetState = isAnimating, label = "cross fade") { showSwap ->
-                                Box(
-                                    contentAlignment = Alignment.Center,
-                                    modifier = Modifier.fillMaxSize(),
-                                ){
-                                    when (showSwap) {
-                                        true -> {
-                                            SwapCardView(
-                                                amount = 120.00,
-                                                tokenName = "USDC",
-                                                icon = R.drawable.usdc,
-                                            )
-                                        }
-                                        false-> {
-                                            IdleView(
-                                                amount = 120.00,
-                                                tokenName = "USDC",
-                                                fiatAmount = 120.00,
-                                                chainList = listOf(1,10,8453,42161),
-                                                icon = R.drawable.usdc,
-                                            )
-                                        }
-                                    }
-                                }
-                            }
+                            SendCardView(
+                                amount = asset.amount,
+                                tokenName = asset.tokenName
+                            )
                         },
-                        backgroundColor = Color(0xFF1E5A9C),
-                        rotated = rotated,
+//                        backgroundColor = asset.backgroundColor,
                         rotation = rotation,
                         backSide = {
 
@@ -358,59 +257,28 @@ fun IsolatedCardView(){
                                 contentAlignment = Alignment.Center
                             ) {
 
-                                if(cardState == TOKENACTION.SEND){
-                                    SendCardView(
-                                        amount = 120.00,
-                                        tokenName = "USDC",
-                                        chainList = listOf(1,10,8453,42161),
-
-                                        )
-                                }
-
-                                if(cardState == TOKENACTION.SWAP){
-                                    SwapCardView(
-                                        amount = 120.00,
-                                        tokenName = "USDC",
-                                        icon = R.drawable.usdc
-                                    )
-                                }
+                                Text(
+                                    "SEND",
+                                    style = TextStyle(
+                                        fontFamily = PitagonsSans,
+                                        color = dgenWhite,
+                                        fontWeight = FontWeight.SemiBold,
+                                        fontSize = 128.sp,
+                                        lineHeight = 128.sp,
+                                        letterSpacing = 0.sp,
+                                        textDecoration = TextDecoration.None
+                                    ),
+                                )
 
 
                             }
 
 //                        }
 
-                        }
+                        },
+//                        sharedTransitionScope = sharedTransitionScope,
+//                        animatedVisibilityScope = animatedVisibilityScope
                     )
-
-
-                Crossfade(modifier = Modifier.graphicsLayer{ translationY = -60f}.zIndex(5f), targetState = isAnimating, animationSpec = if(isAnimating) tween(600, 800) else tween(200, 0)) { visible ->
-                    if (visible){
-                        CircleButton(
-                            icon = {
-                                Icon(
-                                    modifier = Modifier.graphicsLayer(rotationZ = 90f).size(24.dp),
-                                    painter = painterResource(R.drawable.baseline_swap_horiz_24),
-                                    contentDescription = "Swap Icon"
-                                )
-                            },
-                            containerColor = dgenOcean,
-                            contentColor = dgenTurqoise,
-                            buttonSize = 40.dp,
-                            onClick = {
-                                //rotated = !rotated
-                                //isAnimating = !isAnimating
-                                //startSwapAnimation = !startSwapAnimation
-                                //hasClicked = true
-
-                            }
-                        )
-                    }
-                }
-            }
-
-
-
 
 
             Row(
@@ -418,11 +286,7 @@ fun IsolatedCardView(){
                 horizontalArrangement = Arrangement.spacedBy(32.dp)
             ) {
 
-                AnimatedVisibility(
-                    (cardState != TOKENACTION.IDLE),
-                    enter = fadeIn(tween(300)),
-                    exit = fadeOut(tween(300))
-                ) {
+
                     CircleButton(
                         icon = {
                             Icon(
@@ -431,26 +295,23 @@ fun IsolatedCardView(){
                                 contentDescription = "Send Icon"
                             )
                         },
-                        containerColor = dgenBurgendy,
+                        containerColor = Color.Transparent,
                         contentColor = dgenRed ,
                         buttonSize = 48.dp,
                         onClick = {
+
                             rotated = false
 
                             isAnimating = false
                             hasClicked = true
 
                             cardState = TOKENACTION.IDLE
+                            onNavigateBack()
                         }
                     )
-                }
 
 
-                AnimatedVisibility(
-                    visible = (cardState == TOKENACTION.IDLE) || (cardState == TOKENACTION.SEND),
-                    enter = fadeIn(tween(300)),
-                    exit = fadeOut(tween(300))
-                ) {
+
                     CircleButton(
                         icon = {
                             Icon(
@@ -459,7 +320,7 @@ fun IsolatedCardView(){
                                 contentDescription = "Send Icon"
                             )
                         },
-                        containerColor = if(cardState == TOKENACTION.SEND) dgenTurqoise else dgenOcean,
+                        containerColor = if(cardState == TOKENACTION.SEND) dgenTurqoise else Color.Transparent,
                         contentColor = if(cardState == TOKENACTION.SEND)  dgenOcean else dgenTurqoise ,
                         buttonSize = 48.dp,
                         onClick = {
@@ -467,20 +328,22 @@ fun IsolatedCardView(){
                             cardState = TOKENACTION.SEND
                         }
                     )
-                }
+
             }
         }
     }
 
 }
 
-@SuppressLint("UnusedCrossfadeTargetStateParameter")
-@Preview(
-    showBackground = true,
-    widthDp = 447,
-    heightDp = 447,
-)
-@Composable
-fun IsolatedCardViewPreview(){
-    IsolatedCardView()
-}
+//@SuppressLint("UnusedCrossfadeTargetStateParameter")
+//@Preview(
+//    showBackground = true,
+//    widthDp = 447,
+//    heightDp = 447,
+//)
+//@Composable
+//fun IsolatedCardViewPreview(){
+//    IsolatedCardView()
+//}
+
+
