@@ -663,6 +663,6 @@ fun WalletPreview(){
 
 @SuppressLint("ServiceCast")
 private fun copyTextToClipboard(context: Context, text: String) {
-    val clipboardManager = context.getSystemService(Context.CLIPBOARD_SERVICE) as android.content.ClipboardManager
-    clipboardManager.setText(AnnotatedString(text))
+//    val clipboardManager = context.getSystemService(Context.CLIPBOARD_SERVICE) as android.content.ClipboardManager
+//    clipboardManager.setText(AnnotatedString(text))
 }
