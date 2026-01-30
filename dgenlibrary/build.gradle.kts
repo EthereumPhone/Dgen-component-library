@@ -67,3 +67,16 @@ dependencies {
     implementation(libs.androidx.compose.animation.core)
 
 }
+
+afterEvaluate {
+    publishing {
+        publications {
+            create<MavenPublication>("release") {
+                from(components["release"])
+                groupId = "com.example"
+                artifactId = "dgenlibrary"
+                version = "1.0.0"
+            }
+        }
+    }
+}
