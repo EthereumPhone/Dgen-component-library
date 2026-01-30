@@ -1,5 +1,6 @@
 package com.example.dgenlibrary.ui.theme
 
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.staticCompositionLocalOf
@@ -9,7 +10,11 @@ import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.runtime.Immutable
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.text.font.Font
+import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextDecoration
 import androidx.compose.ui.unit.TextUnit
 
@@ -50,10 +55,12 @@ data class DgenTypography(
     val header1: TextStyle,
     val header2: TextStyle,
     val header3: TextStyle,
+    val header4: TextStyle,
     val body2: TextStyle,
     val body1: TextStyle,
     val button: TextStyle,
-    val label: TextStyle
+    val label: TextStyle,
+    val digitalNumber: TextStyle
 )
 
 @Immutable
@@ -62,6 +69,7 @@ data class DgenFontSize(
     val header1: TextUnit,
     val header2: TextUnit,
     val header3: TextUnit,
+    val header4: TextUnit,
     val body2: TextUnit,
     val body1: TextUnit,
     val button: TextUnit,
@@ -115,10 +123,12 @@ val LocalCustomTypography = staticCompositionLocalOf {
         header1 = TextStyle.Default,
         header2 = TextStyle.Default,
         header3 = TextStyle.Default,
+        header4 = TextStyle.Default,
         body2 = TextStyle.Default,
         body1 = TextStyle.Default,
         button = TextStyle.Default,
         label = TextStyle.Default,
+        digitalNumber = TextStyle.Default,
     )
 }
 val LocalCustomElevation = staticCompositionLocalOf {
@@ -141,6 +151,7 @@ val LocalCustomFontSize = staticCompositionLocalOf {
         header1 = TextUnit.Unspecified,
         header2 = TextUnit.Unspecified,
         header3 = TextUnit.Unspecified,
+        header4 = TextUnit.Unspecified,
         body2 = TextUnit.Unspecified,
         body1 = TextUnit.Unspecified,
         button = TextUnit.Unspecified,
@@ -182,8 +193,8 @@ fun DgenTheme(
             fontFamily = PitagonsSans,
             color = dgenWhite,
             fontWeight = FontWeight.SemiBold,
-            fontSize = 128.sp,
-            lineHeight = 128.sp,
+            fontSize = header0_fontSize,
+            lineHeight = header0_fontSize,
             letterSpacing = 0.sp,
             textDecoration = TextDecoration.None
         ),
@@ -191,8 +202,8 @@ fun DgenTheme(
             fontFamily = PitagonsSans,
             color = dgenWhite,
             fontWeight = FontWeight.SemiBold,
-            fontSize = 72.sp,
-            lineHeight = 72.sp,
+            fontSize = header1_fontSize,
+            lineHeight = header1_fontSize,
             letterSpacing = 0.sp,
             textDecoration = TextDecoration.None
         ),
@@ -200,8 +211,8 @@ fun DgenTheme(
             fontFamily = PitagonsSans,
             color = dgenWhite,
             fontWeight = FontWeight.SemiBold,
-            fontSize = 48.sp,
-            lineHeight = 48.sp,
+            fontSize = header2_fontSize,
+            lineHeight = header2_fontSize,
             letterSpacing = 0.sp,
             textDecoration = TextDecoration.None
         ),
@@ -209,8 +220,17 @@ fun DgenTheme(
             fontFamily = PitagonsSans,
             color = dgenWhite,
             fontWeight = FontWeight.SemiBold,
-            fontSize = 40.sp,
-            lineHeight = 40.sp,
+            fontSize = header3_fontSize,
+            lineHeight = header3_fontSize,
+            letterSpacing = 0.sp,
+            textDecoration = TextDecoration.None
+        ),
+        header4 = TextStyle(
+            fontFamily = PitagonsSans,
+            color = dgenWhite,
+            fontWeight = FontWeight.SemiBold,
+            fontSize = header4_fontSize,
+            lineHeight = header4_fontSize,
             letterSpacing = 0.sp,
             textDecoration = TextDecoration.None
         ),
@@ -250,6 +270,14 @@ fun DgenTheme(
             letterSpacing = 0.sp,
             textDecoration = TextDecoration.None
         ),
+        digitalNumber = TextStyle(
+            fontFamily = DigitalNumbers,
+            color = dgenWhite,
+            fontWeight = FontWeight.Normal,
+            fontSize = header2_fontSize,
+            textAlign = TextAlign.Center,
+            letterSpacing = 60.sp * -0.15f
+        ),
     )
     val customElevation = DgenElevation(
         default = 4.dp,
@@ -270,7 +298,8 @@ fun DgenTheme(
         header0 = header0_fontSize,
         header1 = header1_fontSize,
         header2 = header2_fontSize,
-        header3 = header3_fontSize
+        header3 = header3_fontSize,
+        header4 = header4_fontSize
     )
 
     CompositionLocalProvider(
@@ -297,7 +326,7 @@ object DgenTheme {
     val dimensions: DgenDimension
         @Composable
         get() = LocalCustomDimension.current
-    val fontSize: DgenDimension
+    val fontSize: DgenFontSize
         @Composable
-        get() = LocalCustomDimension.current
+        get() = LocalCustomFontSize.current
 }

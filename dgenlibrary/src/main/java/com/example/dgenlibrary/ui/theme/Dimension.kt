@@ -13,8 +13,9 @@ val label_fontSize = 16.sp
 val button_fontSize = 20.sp
 val body1_fontSize = 24.sp
 val body2_fontSize = 32.sp
-val header3_fontSize = 40.sp
-val header2_fontSize = 48.sp
+val header4_fontSize = 40.sp
+val header3_fontSize = 48.sp
+val header2_fontSize = 60.sp
 val header1_fontSize = 72.sp
 val header0_fontSize = 128.sp
 
