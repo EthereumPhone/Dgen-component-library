@@ -286,3 +286,19 @@ private fun TokenCardPlaceholderPreview() {
     TokenCardPlaceholder(primaryColor = dgenGreen)
 }
 
+@Preview(device = "spec:width=720px,height=720px,dpi=240", name = "DDevice")
+@Composable
+private fun TokenCardPreviewDDevice() {
+    TokenCard(
+        tokenData = TokenDisplayData(
+            name = "Degen",
+            symbol = "DEGEN",
+            marketCap = "$1.25M",
+            priceChange = "+15.5%",
+            priceChangeColor = dgenGreen
+        ),
+        primaryColor = dgenGreen,
+        onClick = {},
+        onLongPress = {}
+    )
+}

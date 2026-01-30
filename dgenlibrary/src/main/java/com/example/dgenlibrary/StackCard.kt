@@ -666,3 +666,27 @@ private fun copyTextToClipboard(context: Context, text: String) {
 //    val clipboardManager = context.getSystemService(Context.CLIPBOARD_SERVICE) as android.content.ClipboardManager
 //    clipboardManager.setText(AnnotatedString(text))
 }
+
+@Preview(device = "spec:width=720px,height=720px,dpi=240", name = "DDevice")
+@Composable
+fun StackCardPreviewDDevice(){
+    val list = listOf(
+        Asset(
+            amount = 120.00,
+            tokenName = "USDC",
+            fiatAmount = 120.00,
+            backgroundColor = Color(0xFF1E5A9C),
+            chainList = listOf(1,10,8453,42161),
+            icon = R.drawable.usdc
+        ),
+        Asset(
+            amount = 50.00,
+            tokenName = "ETH",
+            fiatAmount = 3500.00,
+            backgroundColor = Color(0xFF9C27B0),
+            chainList = listOf(1,10,8453,42161),
+            icon = R.drawable.usdc
+        ),
+    )
+    StackedVerticalPager(assets = list)
+}

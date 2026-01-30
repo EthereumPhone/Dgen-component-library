@@ -122,3 +122,14 @@ private fun TokenInfoVolumePreview() {
     }
 }
 
+@Preview(device = "spec:width=720px,height=720px,dpi=240", name = "DDevice")
+@Composable
+private fun TokenInfoPreviewDDevice() {
+    Box(modifier = Modifier.background(dgenBlack).padding(16.dp)) {
+        TokenInfo(
+            title = "MCAP",
+            description = "$1.25M",
+            primaryColor = dgenGreen
+        )
+    }
+}

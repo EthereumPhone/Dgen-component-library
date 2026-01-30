@@ -17,6 +17,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.tooling.preview.Preview
 import com.example.dgenlibrary.ui.theme.DgenTheme
 import com.example.dgenlibrary.ui.theme.dgenBlack
 
@@ -208,4 +209,10 @@ fun ExampleDropdownSlideList() {
             }
         }
     }
+}
+
+@Preview(device = "spec:width=720px,height=720px,dpi=240", name = "DDevice")
+@Composable
+fun DropdownSlideListPreviewDDevice() {
+    ExampleDropdownSlideList()
 }

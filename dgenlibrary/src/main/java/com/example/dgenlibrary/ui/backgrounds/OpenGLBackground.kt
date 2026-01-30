@@ -1,6 +1,7 @@
 package com.example.dgenlibrary.ui.backgrounds
 
 import android.opengl.GLSurfaceView
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.size
@@ -102,3 +103,18 @@ private fun OpenGLBackgroundPreview() {
     }
 }
 
+@Preview(device = "spec:width=720px,height=720px,dpi=240", name = "DDevice")
+@Composable
+private fun OpenGLBackgroundPreviewDDevice() {
+    Box(
+        modifier = Modifier
+            .fillMaxSize()
+            .background(dgenBlack),
+        contentAlignment = Alignment.Center
+    ) {
+        androidx.compose.material3.Text(
+            text = "OpenGLBackground\n(Requires GLSurfaceView)",
+            color = Color.White
+        )
+    }
+}

@@ -16,7 +16,6 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.TextUnit
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-// ==================== PREVIEWS ====================
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -354,3 +353,33 @@ private fun GlowTextPreviewAllPresets() {
     }
 }
 
+@Preview(device = "spec:width=720px,height=720px,dpi=240", name = "DDevice")
+@Composable
+private fun GlowTextPreviewDDevice() {
+    Box(
+        modifier = Modifier
+            .fillMaxSize()
+            .background(Color.Black)
+            .padding(16.dp)
+    ) {
+        Column(
+            verticalArrangement = Arrangement.spacedBy(12.dp)
+        ) {
+            GlowText(
+                text = "SYSTEM INITIALIZED",
+                color = Color(0xFF00FF00),
+                glowIntensity = GlowTextDefaults.intenseGlow.intensity,
+                glowRadius = GlowTextDefaults.intenseGlow.radius,
+                fontSize = 20.sp,
+                fontWeight = FontWeight.Bold
+            )
+            
+            GlowText(
+                text = "> Connecting to network...",
+                color = Color(0xFF00FF00),
+                glowIntensity = GlowTextDefaults.standardGlow.intensity,
+                glowRadius = GlowTextDefaults.standardGlow.radius
+            )
+        }
+    }
+}

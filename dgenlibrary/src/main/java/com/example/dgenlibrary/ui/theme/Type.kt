@@ -9,24 +9,6 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.sp
 import com.example.dgenlibrary.R
 
-val SourceSansProFamily = FontFamily(
-    Font(R.font.sourcesans3_light, FontWeight.Light),
-    Font(R.font.sourcesans3_regular, FontWeight.Normal),
-    Font(R.font.sourcesans3_italic, FontWeight.Normal, FontStyle.Italic),
-    Font(R.font.sourcesans3_medium, FontWeight.Medium),
-    Font(R.font.sourcesans3_semibold, FontWeight.SemiBold),
-    Font(R.font.sourcesans3_bold, FontWeight.Bold)
-)
-
-val MonomaniacOneFamily = FontFamily(
-    Font(R.font.monomaniacone_regular, FontWeight.Normal),
-)
-
-val Exo2Family = FontFamily(
-    Font(R.font.exo2_medium, FontWeight.Normal),
-    Font(R.font.exo2_semibold, FontWeight.SemiBold),
-)
-
 val SpaceMono = FontFamily(
     Font(R.font.spacemono_bold, FontWeight.Bold),
 )

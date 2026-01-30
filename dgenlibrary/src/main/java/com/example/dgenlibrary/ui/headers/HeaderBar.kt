@@ -249,3 +249,12 @@ private fun HeaderBarNoCancelPreview() {
     )
 }
 
+@Preview(device = "spec:width=720px,height=720px,dpi=240", name = "DDevice")
+@Composable
+private fun HeaderBarPreviewDDevice() {
+    HeaderBar(
+        text = "Filter & Sort",
+        primaryColor = dgenGreen,
+        onClick = {}
+    )
+}

@@ -18,7 +18,16 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.semantics.Role
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.padding
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.rounded.Add
+import androidx.compose.material3.Icon
+import androidx.compose.material3.Text
+import androidx.compose.ui.tooling.preview.Preview
 import com.example.dgenlibrary.ui.theme.DgenTheme
+import com.example.dgenlibrary.ui.theme.dgenBlack
+import com.example.dgenlibrary.ui.theme.dgenTurqoise
 
 @Composable
 fun ActionButton(
@@ -58,4 +67,30 @@ fun ActionButton(
         }
     }
 
+}
+
+@Preview(device = "spec:width=720px,height=720px,dpi=240", name = "DDevice")
+@Composable
+fun ActionButtonPreviewDDevice() {
+    Box(
+        modifier = Modifier
+            .fillMaxSize()
+            .background(dgenBlack)
+            .padding(16.dp),
+        contentAlignment = androidx.compose.ui.Alignment.Center
+    ) {
+        ActionButton(
+            onClick = {},
+            icon = {
+                Icon(
+                    imageVector = Icons.Rounded.Add,
+                    contentDescription = "Add",
+                    tint = dgenTurqoise
+                )
+            },
+            title = {
+                Text(text = "ADD", color = dgenTurqoise)
+            }
+        )
+    }
 }

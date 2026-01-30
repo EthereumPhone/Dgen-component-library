@@ -10,7 +10,7 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.automirrored.filled.ArrowBack
+import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.Scaffold
@@ -81,7 +81,7 @@ fun DgenLargeTopBarBackground(
     topBarPadding: Dp = 16.dp,
     navigationIcon: @Composable () -> Unit = {
         Icon(
-            imageVector = Icons.AutoMirrored.Filled.ArrowBack,
+            imageVector = Icons.Default.ArrowBack,
             contentDescription = "Back",
             tint = primaryColor
         )
@@ -172,7 +172,7 @@ fun DgenLargeTopBarScreen(
     topBarPadding: Dp = 16.dp,
     navigationIcon: @Composable () -> Unit = {
         Icon(
-            imageVector = Icons.AutoMirrored.Filled.ArrowBack,
+            imageVector = Icons.Default.ArrowBack,
             contentDescription = "Back",
             tint = primaryColor
         )
@@ -319,3 +319,27 @@ private fun DgenLargeTopBarBackgroundNoFadePreview() {
     }
 }
 
+@OptIn(ExperimentalMaterial3Api::class)
+@Preview(device = "spec:width=720px,height=720px,dpi=240", name = "DDevice")
+@Composable
+private fun DgenLargeTopBarBackgroundPreviewDDevice() {
+    DgenTheme {
+        DgenLargeTopBarScreen(
+            title = "My Notes",
+            subtitle = "JAN 2, 2026 • 14:30",
+            onNavigationClick = {}
+        ) { innerPadding ->
+            Box(
+                modifier = Modifier
+                    .fillMaxSize()
+                    .padding(innerPadding)
+                    .padding(16.dp)
+            ) {
+                Text(
+                    text = "Content goes here...",
+                    color = dgenWhite
+                )
+            }
+        }
+    }
+}

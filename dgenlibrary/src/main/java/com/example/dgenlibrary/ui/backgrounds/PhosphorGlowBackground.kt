@@ -364,3 +364,31 @@ private fun MatrixRainBackgroundPreview() {
     }
 }
 
+@Preview(device = "spec:width=720px,height=720px,dpi=240", name = "DDevice")
+@Composable
+private fun PhosphorGlowBackgroundPreviewDDevice() {
+    MaterialTheme {
+        PhosphorGlowBackground(
+            primaryColor = Color(0xFF00FF00),
+            enableScanlines = true,
+            enableMatrixRain = true,
+            enableGrid = true
+        ) {
+            Column(
+                modifier = Modifier
+                    .fillMaxSize()
+                    .padding(16.dp),
+                horizontalAlignment = Alignment.CenterHorizontally,
+                verticalArrangement = Arrangement.Center
+            ) {
+                Text(
+                    text = "TERMINAL READY",
+                    color = Color(0xFF00FF00),
+                    fontFamily = FontFamily.Monospace,
+                    fontWeight = FontWeight.Bold,
+                    fontSize = 24.sp
+                )
+            }
+        }
+    }
+}

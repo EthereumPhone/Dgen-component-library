@@ -162,6 +162,21 @@ fun PreviewCard(){
     )
 }
 
+@Preview(device = "spec:width=720px,height=720px,dpi=240", name = "DDevice")
+@Composable
+fun CardPreviewDDevice(){
+    Card(
+        frontSide = {
+            IdleView(
+                amount = 0.13,
+                tokenName = "USDC",
+                fiatAmount = 209.47,
+                icon = R.drawable.usdc,
+            )
+        },
+    )
+}
+
 
 data class Asset(
     val amount: Double,

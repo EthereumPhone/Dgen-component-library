@@ -373,3 +373,30 @@ private fun SearchHeaderFocusedPreview() {
     )
 }
 
+@Preview(device = "spec:width=720px,height=720px,dpi=240", name = "DDevice")
+@Composable
+private fun SearchHeaderPreviewDDevice() {
+    val isSearchFocused = remember { mutableStateOf(false) }
+    val searchValue = remember { mutableStateOf(TextFieldValue("")) }
+    
+    SearchHeader(
+        searchValue = searchValue.value,
+        onValueChange = { searchValue.value = it },
+        onClearValue = { searchValue.value = TextFieldValue("") },
+        focusManager = androidx.compose.ui.platform.LocalFocusManager.current,
+        onAction = {},
+        isSearchFocused = isSearchFocused,
+        focusRequester = remember { FocusRequester() },
+        textfield = { value, onChange, modifier, placeholder ->
+            Box(modifier = modifier) {
+                if (value.text.isEmpty()) {
+                    placeholder()
+                }
+                Text(
+                    text = value.text,
+                    color = dgenWhite
+                )
+            }
+        }
+    )
+}

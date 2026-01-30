@@ -10,7 +10,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.automirrored.filled.ArrowBack
+import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
@@ -100,7 +100,7 @@ fun DgenLargeTopBar(
     backgroundColor: Color = dgenBlack,
     navigationIcon: @Composable () -> Unit = {
         Icon(
-            imageVector = Icons.AutoMirrored.Filled.ArrowBack,
+            imageVector = Icons.Filled.ArrowBack,
             contentDescription = "Back",
             tint = primaryColor,
             modifier = Modifier.size(width = 24.dp, height = 28.dp)
@@ -322,3 +322,15 @@ private fun DgenLargeTopBarCustomColorsPreview() {
     }
 }
 
+@OptIn(ExperimentalMaterial3Api::class)
+@Preview(device = "spec:width=720px,height=720px,dpi=240", name = "DDevice")
+@Composable
+private fun DgenLargeTopBarPreviewDDevice() {
+    DgenTheme {
+        DgenLargeTopBar(
+            title = "My Note Title",
+            subtitle = "JAN 2, 2026 • 14:30",
+            onNavigationClick = {}
+        )
+    }
+}

@@ -656,3 +656,30 @@ private fun MessagesAmberThemePreview() {
     }
 }
 
+@Preview(device = "spec:width=720px,height=720px,dpi=240", name = "DDevice")
+@Composable
+private fun MessageComponentsPreviewDDevice() {
+    val messages = listOf(
+        ChatMessage("1", MessageRole.User, "Hello, how can I help?"),
+        ChatMessage("2", MessageRole.Assistant, "I can assist you with blockchain operations.")
+    )
+    
+    Box(
+        modifier = Modifier
+            .fillMaxSize()
+            .background(Color.Black)
+            .padding(16.dp)
+    ) {
+        Column(
+            verticalArrangement = Arrangement.spacedBy(8.dp)
+        ) {
+            messages.forEach { message ->
+                ChatMessageItem(
+                    message = message,
+                    userTextColor = Color(0xFFCCCCCC),
+                    assistantTextColor = Color(0xFF00FF00)
+                )
+            }
+        }
+    }
+}

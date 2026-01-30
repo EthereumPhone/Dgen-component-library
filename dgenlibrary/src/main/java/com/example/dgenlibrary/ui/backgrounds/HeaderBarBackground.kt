@@ -98,3 +98,10 @@ private fun HeaderBarBackgroundCustomPreview() {
     )
 }
 
+@Preview(device = "spec:width=720px,height=720px,dpi=240", name = "DDevice")
+@Composable
+private fun HeaderBarBackgroundPreviewDDevice() {
+    HeaderBarBackground(
+        primaryColor = dgenGreen
+    )
+}

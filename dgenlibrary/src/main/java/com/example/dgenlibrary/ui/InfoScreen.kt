@@ -125,3 +125,11 @@ private fun InfoScreenEmptyStatePreview() {
     )
 }
 
+@Preview(device = "spec:width=720px,height=720px,dpi=240", name = "DDevice")
+@Composable
+private fun InfoScreenPreviewDDevice() {
+    InfoScreen(
+        description = "Loading tokens...",
+        primaryColor = dgenGreen
+    )
+}

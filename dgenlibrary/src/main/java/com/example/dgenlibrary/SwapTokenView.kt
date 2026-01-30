@@ -39,6 +39,8 @@ import com.example.dgenlibrary.ui.theme.dgenBurgendy
 import com.example.dgenlibrary.ui.theme.dgenOcean
 import com.example.dgenlibrary.ui.theme.dgenRed
 import com.example.dgenlibrary.ui.theme.dgenTurqoise
+import com.example.dgenlibrary.ui.theme.dgenBlack
+import androidx.compose.ui.tooling.preview.Preview
 import kotlinx.coroutines.delay
 
 @OptIn(ExperimentalSharedTransitionApi::class)
@@ -377,4 +379,26 @@ fun IsolatedSwapCardView(
         }
     }
 
+}
+
+@Preview(device = "spec:width=720px,height=720px,dpi=240", name = "DDevice")
+@Composable
+fun SwapTokenViewPreviewDDevice() {
+    Box(
+        modifier = Modifier
+            .fillMaxSize()
+            .background(dgenBlack),
+        contentAlignment = Alignment.Center
+    ) {
+        Card(
+            modifier = Modifier.padding(16.dp),
+            frontSide = {
+                SwapCardView(
+                    amount = 120.00,
+                    tokenName = "USDC",
+                    icon = R.drawable.usdc,
+                )
+            }
+        )
+    }
 }

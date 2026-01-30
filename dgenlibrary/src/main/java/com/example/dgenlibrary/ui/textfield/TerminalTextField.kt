@@ -613,3 +613,23 @@ private fun TerminalComponentsCombinedPreview() {
     }
 }
 
+@Preview(device = "spec:width=720px,height=720px,dpi=240", name = "DDevice")
+@Composable
+private fun TerminalTextFieldPreviewDDevice() {
+    var text by remember { mutableStateOf("Hello, Terminal!") }
+    
+    Box(
+        modifier = Modifier
+            .fillMaxSize()
+            .background(Color.Black)
+            .padding(16.dp)
+    ) {
+        TerminalTextField(
+            value = text,
+            onValueChange = { text = it },
+            textColor = Color(0xFF00FF00),
+            cursorColor = Color(0xFF00FF00),
+            modifier = Modifier.fillMaxWidth()
+        )
+    }
+}

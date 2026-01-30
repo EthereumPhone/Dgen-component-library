@@ -431,3 +431,13 @@ fun SwapCardPreviewView(){
         icon = R.drawable.usdc,
     )
 }
+
+@Preview(device = "spec:width=720px,height=720px,dpi=240", name = "DDevice")
+@Composable
+fun SwapViewPreviewDDevice(){
+    SwapCardView(
+        amount = 120.00,
+        tokenName = "USDC",
+        icon = R.drawable.usdc,
+    )
+}

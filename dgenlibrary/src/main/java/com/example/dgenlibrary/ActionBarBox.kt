@@ -43,8 +43,7 @@ import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.zIndex
-import com.example.dgenlibrary.ui.theme.DgenTheme
-import com.example.dgenlibrary.ui.theme.SourceSansProFamily
+import androidx.compose.ui.tooling.preview.Preview
 import com.example.dgenlibrary.ui.theme.dgenWhite
 
 @Composable
@@ -270,3 +269,36 @@ fun ActionBarBox(
 //        }
 //    )
 //}
+
+@Preview(device = "spec:width=720px,height=720px,dpi=240", name = "DDevice")
+@Composable
+fun ActionBarBoxPreview() {
+    Box(
+        modifier = Modifier
+            .fillMaxSize()
+            .background(Color.Black)
+    ) {
+        ActionBarBox(
+            boxContent = {
+                Box(
+                    modifier = Modifier
+                        .fillMaxSize()
+                        .padding(16.dp),
+                    contentAlignment = Alignment.Center
+                ) {
+                    Text(
+                        text = "Main Content",
+                        color = dgenWhite
+                    )
+                }
+            },
+            actionContent = {
+                Icon(
+                    imageVector = Icons.Rounded.Add,
+                    contentDescription = "Add",
+                    tint = dgenWhite
+                )
+            }
+        )
+    }
+}

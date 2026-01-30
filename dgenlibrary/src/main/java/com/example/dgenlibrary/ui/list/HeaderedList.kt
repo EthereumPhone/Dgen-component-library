@@ -159,3 +159,28 @@ private fun HeaderedLazyColumnPreview() {
     }
 }
 
+@Preview(device = "spec:width=720px,height=720px,dpi=240", name = "DDevice")
+@Composable
+private fun HeaderedLazyColumnPreviewDDevice() {
+    val sampleItems = listOf(
+        "Alice", "Andrew", "Bob", "Carol", "Charlie", 
+        "David", "Eve", "Frank", "Grace"
+    )
+    val headeredItems = getItemsWithAlphabeticalHeaders(sampleItems) { it.first() }
+    
+    DgenTheme {
+        HeaderedLazyColumn(
+            items = headeredItems,
+            getHeaderText = { it.first().uppercase() },
+            itemContent = { name ->
+                Text(
+                    text = name,
+                    color = dgenWhite,
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(horizontal = 24.dp, vertical = 12.dp)
+                )
+            }
+        )
+    }
+}

@@ -316,3 +316,12 @@ fun SendCardPreviewView(){
 //        chainList = listOf(1,10,8453,42161)
     )
 }
+
+@Preview(device = "spec:width=720px,height=720px,dpi=240", name = "DDevice")
+@Composable
+fun SendCardViewPreviewDDevice(){
+    SendCardView(
+        amount = 120.00,
+        tokenName = "USDC",
+    )
+}

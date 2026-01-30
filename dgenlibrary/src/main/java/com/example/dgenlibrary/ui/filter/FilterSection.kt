@@ -225,3 +225,15 @@ private fun FilterOptionButtonUnselectedPreview() {
     }
 }
 
+@Preview(device = "spec:width=720px,height=720px,dpi=240", name = "DDevice")
+@Composable
+private fun FilterSectionPreviewDDevice() {
+    FilterSection(
+        title = "SORT BY",
+        options = listOf("trending", "24h % change", "volume", "market cap"),
+        selectedOption = "trending",
+        primaryColor = dgenGreen,
+        secondaryColor = dgenBlack,
+        onOptionSelected = {}
+    )
+}

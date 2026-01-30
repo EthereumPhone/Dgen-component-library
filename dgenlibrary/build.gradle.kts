@@ -52,6 +52,10 @@ dependencies {
     implementation(libs.androidx.animation.android)
     debugImplementation(libs.compose.ui.tooling)
 
+    // Coil for image loading
+    implementation(libs.coil.compose)
+    implementation(libs.coil.gif)
+
     // Optional Google Fonts (Uncomment if needed)
     // implementation(libs.compose.ui.text.google.fonts)
 

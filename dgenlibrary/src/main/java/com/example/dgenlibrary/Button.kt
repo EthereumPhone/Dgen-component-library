@@ -135,3 +135,27 @@ fun PreviewCircleButton(){
         onClick = {}
     )
 }
+
+@Preview(device = "spec:width=720px,height=720px,dpi=240", name = "DDevice")
+@Composable
+fun ButtonPreviewDDevice() {
+    Column(
+        modifier = Modifier.padding(16.dp),
+        verticalArrangement = Arrangement.spacedBy(16.dp),
+        horizontalAlignment = androidx.compose.ui.Alignment.CenterHorizontally
+    ) {
+        PrimaryButton {
+            Text(text = "Primary Button")
+        }
+        CircleButton(
+            icon = {
+                Icon(
+                    modifier = Modifier.size(24.dp),
+                    painter = painterResource(R.drawable.qr_code),
+                    contentDescription = "QR-Code"
+                )
+            },
+            onClick = {}
+        )
+    }
+}

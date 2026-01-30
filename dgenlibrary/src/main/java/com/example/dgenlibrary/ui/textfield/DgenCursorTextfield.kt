@@ -45,6 +45,7 @@ import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import com.example.dgenlibrary.ui.theme.DgenTheme
 import com.example.dgenlibrary.ui.theme.PitagonsSans
 import com.example.dgenlibrary.ui.theme.dgenGray
@@ -92,7 +93,7 @@ fun DgenCursorTextfield(
                 fontFamily = PitagonsSans,
                 color = dgenWhite.copy(alpha = 0.45f),
                 fontWeight = FontWeight.SemiBold,
-                fontSize = androidx.compose.ui.unit.sp(24)
+                fontSize = 24.sp
             )
         )
     },
@@ -101,7 +102,7 @@ fun DgenCursorTextfield(
         fontFamily = PitagonsSans,
         color = dgenWhite,
         fontWeight = FontWeight.SemiBold,
-        fontSize = androidx.compose.ui.unit.sp(24)
+        fontSize = 24.sp
     ),
     cursorColor: Color = dgenTurqoise,
     cursorWidth: Dp = 18.dp,
@@ -243,7 +244,7 @@ fun DgenCursorSearchTextfield(
                 fontFamily = PitagonsSans,
                 color = dgenTurqoise.copy(alpha = 0.45f),
                 fontWeight = FontWeight.Normal,
-                fontSize = androidx.compose.ui.unit.sp(20)
+                fontSize = 20.sp
             )
         )
     },
@@ -252,7 +253,7 @@ fun DgenCursorSearchTextfield(
         fontFamily = PitagonsSans,
         color = dgenWhite,
         fontWeight = FontWeight.SemiBold,
-        fontSize = androidx.compose.ui.unit.sp(20)
+        fontSize = 20.sp
     ),
     cursorColor: Color = dgenTurqoise,
     cursorWidth: Dp = 18.dp,
@@ -396,3 +397,14 @@ private fun DgenCursorSearchTextfieldPreview() {
     }
 }
 
+@Preview(device = "spec:width=720px,height=720px,dpi=240", name = "DDevice")
+@Composable
+private fun DgenCursorTextfieldPreviewDDevice() {
+    var value by remember { mutableStateOf(TextFieldValue("Hello World")) }
+    DgenTheme {
+        DgenCursorTextfield(
+            value = value,
+            onValueChange = { value = it }
+        )
+    }
+}

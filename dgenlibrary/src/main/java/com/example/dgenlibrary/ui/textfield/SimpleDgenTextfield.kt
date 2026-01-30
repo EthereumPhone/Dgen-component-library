@@ -70,6 +70,7 @@ import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import androidx.compose.ui.window.Popup
 import androidx.compose.ui.window.PopupProperties
 import com.example.dgenlibrary.ui.theme.DgenTheme
@@ -79,9 +80,9 @@ import com.example.dgenlibrary.ui.theme.dgenBlack
 import com.example.dgenlibrary.ui.theme.dgenOcean
 import com.example.dgenlibrary.ui.theme.dgenTurqoise
 import com.example.dgenlibrary.ui.theme.dgenWhite
+import com.example.dgenlibrary.ui.theme.label_fontSize
+import com.example.dgenlibrary.ui.theme.pulseOpacity
 
-private const val GHOST_OPACITY = 0.2f
-private const val LABEL_FONT_SIZE = 16
 
 /**
  * A styled text field with label support, custom cursor, and optional secondary action.
@@ -146,7 +147,7 @@ fun SimpleDgenTextfield(
         fontFamily = PitagonsSans,
         color = dgenWhite,
         fontWeight = FontWeight.SemiBold,
-        fontSize = androidx.compose.ui.unit.sp(24)
+        fontSize = 24.sp
     ),
     placeholder: @Composable (() -> Unit)? = null,
     labelContent: @Composable (() -> Unit)? = null,
@@ -161,7 +162,7 @@ fun SimpleDgenTextfield(
     val customTextToolbar = remember(textToolbarState) { SimpleTextToolbar(textToolbarState) }
 
     val animatedBackgroundOpacity by animateFloatAsState(
-        targetValue = if (isFocused) GHOST_OPACITY else 0f,
+        targetValue = if (isFocused) pulseOpacity else 0f,
         animationSpec = tween(durationMillis = 300),
         label = "backgroundColor"
     )
@@ -287,7 +288,6 @@ fun SimpleDgenTextfield(
                         keyboardOptions = KeyboardOptions.Default.copy(
                             imeAction = if (singleLine) ImeAction.Done else ImeAction.Default,
                             keyboardType = keyboardtype,
-                            autoCorrectEnabled = autoCorrectEnabled
                         ),
                         keyboardActions = KeyboardActions(
                             onDone = {
@@ -537,7 +537,7 @@ private fun SimpleTextSelectionMenuButton(
             text = text,
             style = TextStyle(
                 fontFamily = SpaceMono,
-                fontSize = androidx.compose.ui.unit.sp(LABEL_FONT_SIZE),
+                fontSize = label_fontSize,
                 fontWeight = FontWeight.SemiBold
             ),
             color = primaryColor
@@ -605,3 +605,27 @@ private fun SimpleDgenTextfieldWithSecondaryActionPreview() {
     }
 }
 
+@Preview(device = "spec:width=720px,height=720px,dpi=240", name = "DDevice")
+@Composable
+private fun SimpleDgenTextfieldPreviewDDevice() {
+    var value by remember { mutableStateOf(TextFieldValue("Hello World")) }
+    DgenTheme {
+        SimpleDgenTextfield(
+            value = value,
+            onValueChange = { value = it },
+            labelContent = {
+                Text(
+                    text = "LABEL",
+                    color = dgenTurqoise,
+                    style = TextStyle(fontFamily = SpaceMono, fontWeight = FontWeight.Normal)
+                )
+            },
+            placeholder = {
+                Text(
+                    text = "Enter text...",
+                    color = dgenWhite.copy(alpha = 0.45f)
+                )
+            }
+        )
+    }
+}

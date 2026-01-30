@@ -9,10 +9,11 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.FilterAlt
+import androidx.compose.material.icons.filled.Edit
 import androidx.compose.material.icons.filled.Menu
 import androidx.compose.material.icons.filled.Search
 import androidx.compose.material.icons.filled.Settings
+import androidx.compose.material.icons.outlined.Edit
 import androidx.compose.material3.Icon
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
@@ -88,7 +89,7 @@ fun FilterButton(
     modifier: Modifier = Modifier
 ) {
     IconBoxButton(
-        icon = Icons.Default.FilterAlt,
+        icon = Icons.Outlined.Edit,
         contentDescription = "Filter",
         primaryColor = primaryColor,
         secondaryColor = secondaryColor,
@@ -160,7 +161,7 @@ private fun IconBoxButtonPreview() {
 private fun IconBoxButtonActivePreview() {
     Box(modifier = Modifier.padding(8.dp)) {
         IconBoxButton(
-            icon = Icons.Default.FilterAlt,
+            icon = Icons.Default.Edit,
             contentDescription = "Filter",
             primaryColor = dgenGreen,
             secondaryColor = dgenBlack,
@@ -218,3 +219,19 @@ private fun SearchButtonPreview() {
     }
 }
 
+@Preview(device = "spec:width=720px,height=720px,dpi=240", name = "DDevice")
+@Composable
+private fun IconBoxButtonPreviewDDevice() {
+    Box(
+        modifier = Modifier
+            .background(dgenBlack)
+            .padding(16.dp)
+    ) {
+        IconBoxButton(
+            icon = Icons.Default.Edit,
+            contentDescription = "Filter",
+            primaryColor = dgenGreen,
+            onClick = {}
+        )
+    }
+}

@@ -10,6 +10,7 @@ import androidx.compose.animation.core.infiniteRepeatable
 import androidx.compose.animation.core.rememberInfiniteTransition
 import androidx.compose.animation.core.tween
 import androidx.compose.foundation.ExperimentalFoundationApi
+import androidx.compose.foundation.background
 import androidx.compose.foundation.gestures.detectTapGestures
 import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.Arrangement
@@ -54,7 +55,9 @@ import androidx.compose.ui.text.input.TextFieldValue
 import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.tooling.preview.Preview
 import com.example.dgenlibrary.ui.theme.DgenTheme
+import com.example.dgenlibrary.ui.theme.dgenBlack
 
 @SuppressLint("SuspiciousIndentation")
 @Composable
@@ -383,4 +386,25 @@ fun DrawScope.drawCustomCursor(
 //            alpha = cursorAlpha
 //        )
 //    }
+}
+
+@Preview(device = "spec:width=720px,height=720px,dpi=240", name = "DDevice")
+@Composable
+fun TextfieldPreviewDDevice() {
+    val textFieldValue = androidx.compose.runtime.remember { mutableStateOf(TextFieldValue("Sample text")) }
+    val isAnyFieldFocused = androidx.compose.runtime.remember { mutableStateOf(false) }
+    
+    Box(
+        modifier = Modifier
+            .fillMaxWidth()
+            .background(dgenBlack)
+            .padding(16.dp)
+    ) {
+        DgenBasicTextfield(
+            value = textFieldValue.value,
+            onValueChange = { textFieldValue.value = it },
+            isAnyFieldFocused = isAnyFieldFocused,
+            textStyle = DgenTheme.typography.body2
+        )
+    }
 }
