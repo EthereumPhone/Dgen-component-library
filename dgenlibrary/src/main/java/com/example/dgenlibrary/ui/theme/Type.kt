@@ -9,8 +9,16 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.sp
 import com.example.dgenlibrary.R
 
+val DigitalNumbers = FontFamily(
+    Font(R.font.digital_numbers, FontWeight.Normal),
+)
+
 val SpaceMono = FontFamily(
     Font(R.font.spacemono_bold, FontWeight.Bold),
+)
+
+val MonomanicOne = FontFamily(
+    Font(R.font.monomaniac_one_regular, FontWeight.Normal),
 )
 
 

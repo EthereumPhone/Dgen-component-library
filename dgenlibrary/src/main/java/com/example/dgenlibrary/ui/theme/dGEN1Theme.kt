@@ -11,12 +11,14 @@ import androidx.compose.ui.unit.sp
 import androidx.compose.runtime.Immutable
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextDecoration
+import androidx.compose.ui.unit.TextUnit
 
 @Immutable
 data class DgenColors(
     val dgenBlack: Color,
     val dgenWhite: Color,
     val dgenGray: Color,
+    val dgenGunMetal: Color,
     val dgenRed: Color,
     val dgenDarkRed: Color,
     val dgenGreen: Color,
@@ -25,6 +27,21 @@ data class DgenColors(
     val dgenOcean: Color,
     val dgenTurqoise: Color,
     val dgenBurgendy: Color,
+
+    val lazerBurn: Color,
+    val lazerCore: Color,
+
+    val terminalHack: Color,
+    val terminalCore: Color,
+
+    val orcheAsh: Color,
+    val orcheCore: Color,
+
+    val oceanAbyss: Color,
+    val oceanCore: Color,
+
+    val gunMetalForge: Color,
+    val gunMetalCore: Color,
 )
 
 @Immutable
@@ -40,6 +57,19 @@ data class DgenTypography(
 )
 
 @Immutable
+data class DgenFontSize(
+    val header0: TextUnit,
+    val header1: TextUnit,
+    val header2: TextUnit,
+    val header3: TextUnit,
+    val body2: TextUnit,
+    val body1: TextUnit,
+    val button: TextUnit,
+    val label: TextUnit,
+    val tag: TextUnit,
+)
+
+@Immutable
 data class DgenElevation(
     val default: Dp,
     val pressed: Dp
@@ -50,8 +80,7 @@ data class DgenElevation(
 data class DgenDimension(
     val IconSize: Dp,
     val IconButtonSize: Dp,
-
-    )
+)
 
 
 val LocalCustomColors = staticCompositionLocalOf {
@@ -66,7 +95,18 @@ val LocalCustomColors = staticCompositionLocalOf {
         dgenOrche = Color.Unspecified,
         dgenOcean = Color.Unspecified,
         dgenTurqoise = Color.Unspecified,
-        dgenBurgendy = Color.Unspecified
+        dgenBurgendy = Color.Unspecified,
+        dgenGunMetal = Color.Unspecified,
+        lazerBurn = Color.Unspecified,
+        lazerCore = Color.Unspecified,
+        terminalHack = Color.Unspecified,
+        terminalCore = Color.Unspecified,
+        orcheAsh = Color.Unspecified,
+        orcheCore = Color.Unspecified,
+        oceanAbyss = Color.Unspecified,
+        oceanCore = Color.Unspecified,
+        gunMetalForge = Color.Unspecified,
+        gunMetalCore = Color.Unspecified
     )
 }
 val LocalCustomTypography = staticCompositionLocalOf {
@@ -95,9 +135,22 @@ val LocalCustomDimension = staticCompositionLocalOf {
     )
 }
 
+val LocalCustomFontSize = staticCompositionLocalOf {
+    DgenFontSize(
+        header0 = TextUnit.Unspecified,
+        header1 = TextUnit.Unspecified,
+        header2 = TextUnit.Unspecified,
+        header3 = TextUnit.Unspecified,
+        body2 = TextUnit.Unspecified,
+        body1 = TextUnit.Unspecified,
+        button = TextUnit.Unspecified,
+        label = TextUnit.Unspecified,
+        tag = TextUnit.Unspecified
+    )
+}
+
 @Composable
 fun DgenTheme(
-    /* ... */
     content: @Composable () -> Unit
 ) {
     val customColors = DgenColors(
@@ -111,7 +164,18 @@ fun DgenTheme(
         dgenOrche = dgenOrche,
         dgenOcean = dgenOcean,
         dgenTurqoise = dgenTurqoise,
-        dgenBurgendy = dgenBurgendy
+        dgenBurgendy = dgenBurgendy,
+        dgenGunMetal = dgenGunMetal,
+        lazerBurn = lazerBurn,
+        lazerCore = lazerCore,
+        terminalHack = terminalHack,
+        terminalCore = terminalCore,
+        orcheAsh = orcheAsh,
+        orcheCore = orcheCore,
+        oceanAbyss = oceanAbyss,
+        oceanCore = oceanCore,
+        gunMetalForge = gunMetalForge,
+        gunMetalCore = gunMetalCore
     )
     val customTypography = DgenTypography(
         header0 = TextStyle(
@@ -197,11 +261,24 @@ fun DgenTheme(
         IconButtonSize = IconButtonSize
     )
 
+    val customFontSize = DgenFontSize(
+        tag = tag_fontSize,
+        label = label_fontSize,
+        button = button_fontSize,
+        body1 = body1_fontSize,
+        body2 = body2_fontSize,
+        header0 = header0_fontSize,
+        header1 = header1_fontSize,
+        header2 = header2_fontSize,
+        header3 = header3_fontSize
+    )
+
     CompositionLocalProvider(
         LocalCustomColors provides customColors,
         LocalCustomTypography provides customTypography,
         LocalCustomElevation provides customElevation,
         LocalCustomDimension provides customDimension,
+        LocalCustomFontSize provides customFontSize,
         content = content
     )
 }
@@ -218,6 +295,9 @@ object DgenTheme {
         @Composable
         get() = LocalCustomElevation.current
     val dimensions: DgenDimension
+        @Composable
+        get() = LocalCustomDimension.current
+    val fontSize: DgenDimension
         @Composable
         get() = LocalCustomDimension.current
 }

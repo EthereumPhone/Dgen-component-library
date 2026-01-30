@@ -7,9 +7,10 @@ import androidx.compose.ui.unit.sp
 val IconSize = 36.0.dp
 val IconButtonSize = 60.0.dp
 
-val smalllabel_fontSize = 12.sp
-val label_fontSize = 20.sp
-val button_fontSize = 24.sp
+
+val tag_fontSize = 12.sp
+val label_fontSize = 16.sp
+val button_fontSize = 20.sp
 val body1_fontSize = 24.sp
 val body2_fontSize = 32.sp
 val header3_fontSize = 40.sp
