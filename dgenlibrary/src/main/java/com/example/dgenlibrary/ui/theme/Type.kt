@@ -17,19 +17,6 @@ val SpaceMono = FontFamily(
     Font(R.font.spacemono_bold, FontWeight.Bold),
 )
 
-val SourceSans = FontFamily(
-    Font(R.font.sourcesans3_bold, FontWeight.Bold),
-    Font(R.font.sourcesans3_medium, FontWeight.Medium),
-    Font(R.font.sourcesans3_regular, FontWeight.Normal),
-    Font(R.font.sourcesans3_semibold, FontWeight.SemiBold),
-    Font(R.font.sourcesans3_light, FontWeight.Light),
-
-    Font(R.font.sourcesans3_black, FontWeight.Black),
-    Font(R.font.sourcesans3_extralight, FontWeight.ExtraLight),
-    Font(R.font.pitagonsanstext_italic, style= FontStyle.Italic ),
-)
-
-
 val PitagonsSans = FontFamily(
     Font(R.font.pitagonsanstext_bold, FontWeight.Bold),
     Font(R.font.pitagonsanstext_medium, FontWeight.Medium),
