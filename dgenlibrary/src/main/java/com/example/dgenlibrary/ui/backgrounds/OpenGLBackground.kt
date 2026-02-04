@@ -20,73 +20,77 @@ import androidx.compose.ui.platform.LocalLifecycleOwner
 import androidx.compose.ui.tooling.preview.Preview
 import com.example.dgenlibrary.ui.theme.dgenBlack
 
-/**
- * A composable that displays an OpenGL rendered background with content overlaid on top.
- * 
- * This component manages the lifecycle of a GLSurfaceView, pausing and resuming
- * the rendering based on the lifecycle of the composable.
- *
- * @param modifier Modifier to be applied to the background
- * @param glSurfaceView The GLSurfaceView to render as background
- * @param overlayColor Optional color overlay with alpha to darken the background
- * @param overlayAlpha Alpha value for the overlay (0f = transparent, 1f = opaque)
- * @param backgroundSize Size of the OpenGL view (default 300.dp)
- * @param onResume Callback when the view should resume rendering
- * @param onPause Callback when the view should pause rendering
- * @param content The content to display on top of the background
- */
+
+import kotlin.math.roundToInt
+import androidx.compose.runtime.LaunchedEffect
+import org.ethosmobile.contacts.opengl.views.OpenGLGlobeView
+
+
 @Composable
 fun OpenGLBackground(
     modifier: Modifier = Modifier,
-    glSurfaceView: GLSurfaceView,
-    overlayColor: Color = dgenBlack,
-    overlayAlpha: Float = 0.6f,
-    backgroundSize: Dp = 300.dp,
-    onResume: () -> Unit = {},
-    onPause: () -> Unit = {},
+    globeRenderer: OpenGLGlobeView,
+    globeColor: Color,
+    lineWidth: Float = 2f,
     content: @Composable () -> Unit,
 ) {
     val lifecycleOwner = LocalLifecycleOwner.current
 
-    // Manage GLSurfaceView lifecycle
-    DisposableEffect(lifecycleOwner, glSurfaceView) {
+    // Manage GLSurfaceView lifecycle and throttle rendering when not animating
+    DisposableEffect(lifecycleOwner, globeRenderer) {
         val observer = LifecycleEventObserver { _, event ->
             when (event) {
                 Lifecycle.Event.ON_START, Lifecycle.Event.ON_RESUME -> {
-                    onResume()
-                    glSurfaceView.onResume()
+                    globeRenderer.setAnimating(true)
+                    globeRenderer.onResumeView()
                 }
                 Lifecycle.Event.ON_PAUSE, Lifecycle.Event.ON_STOP -> {
-                    onPause()
-                    glSurfaceView.onPause()
+                    globeRenderer.setAnimating(false)
+                    globeRenderer.onPauseView()
                 }
                 else -> {}
             }
         }
         lifecycleOwner.lifecycle.addObserver(observer)
         onDispose {
-            onPause()
-            glSurfaceView.onPause()
+            globeRenderer.setAnimating(false)
+            globeRenderer.onPauseView()
             lifecycleOwner.lifecycle.removeObserver(observer)
         }
     }
 
     Box(modifier = Modifier.fillMaxSize()) {
         // OpenGL rendering in the background
+
         AndroidView(
-            factory = { glSurfaceView },
+            factory = { globeRenderer.apply {
+                // renderMode controlled by setAnimating
+            }
+            },
             modifier = modifier
                 .drawWithContent {
                     drawContent()
-                    drawRect(color = overlayColor, alpha = overlayAlpha)
+                    drawRect(color = dgenBlack, alpha = 0.6f)
                 }
-                .align(Alignment.Center)
-                .size(backgroundSize)
+                .align(Alignment.Center).size(300.dp)//.fillMaxSize() // Match the size of the parent container
         )
 
         content()
+
+    }
+
+    // Update OpenGL renderer color when globeColor changes
+    LaunchedEffect(globeColor, lineWidth) {
+        val r = (globeColor.red * 255).roundToInt()
+        val g = (globeColor.green * 255).roundToInt()
+        val b = (globeColor.blue * 255).roundToInt()
+        val hexColor = String.format("#%02X%02X%02X", r, g, b)
+        globeRenderer.setColor(hexColor)
+        globeRenderer.renderer.linewidth = lineWidth
     }
 }
+
+
 
 @Preview
 @Composable
