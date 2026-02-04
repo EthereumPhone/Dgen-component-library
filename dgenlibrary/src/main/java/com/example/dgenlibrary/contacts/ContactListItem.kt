@@ -1,5 +1,6 @@
 package com.example.dgenlibrary.contacts
 
+import android.view.View
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.interaction.MutableInteractionSource
@@ -18,11 +19,14 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import com.example.dgenlibrary.ui.theme.DgenTheme
+import com.example.dgenlibrary.util.Haptics
 
 @Composable
 fun ContactListItem(
     name: String,
+    primaryColor: Color,
     onClick: () -> Unit,
+    view: View
 ){
     val interactionSource = remember { MutableInteractionSource() }
     //when user hovers over ContactListItem
@@ -40,6 +44,7 @@ fun ContactListItem(
             .padding(start = 24.dp, end = 42.dp, top = 12.dp, bottom = 12.dp)
             .clickable {
                 onClick()
+                view.performHapticFeedback(Haptics().NEUTRAL_HAPTIC)
             },
         horizontalArrangement = Arrangement.spacedBy(18.dp),
         verticalAlignment = Alignment.CenterVertically
@@ -49,6 +54,7 @@ fun ContactListItem(
         Text(
             text = name,
             style = DgenTheme.typography.body2,
+            color = primaryColor,
             maxLines = 2,
             overflow = TextOverflow.Ellipsis
         )
