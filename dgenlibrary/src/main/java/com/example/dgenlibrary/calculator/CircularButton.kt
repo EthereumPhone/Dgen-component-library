@@ -234,7 +234,7 @@ fun CircularButtonPreview(){
                 icon = {
                     Icon(
                         modifier = Modifier.size(40.dp),
-                        painter = painterResource(R.drawable.cancel),
+                        painter = painterResource(R.drawable.clear),
                         contentDescription = "QR-Code",
                         tint = secondaryColor
                     )
