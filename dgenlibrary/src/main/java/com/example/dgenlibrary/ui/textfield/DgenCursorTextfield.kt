@@ -46,6 +46,9 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.example.dgenlibrary.SimpleTextSelectionMenuContent
+import com.example.dgenlibrary.SimpleTextToolbar
+import com.example.dgenlibrary.SimpleTextToolbarState
 import com.example.dgenlibrary.ui.theme.DgenTheme
 import com.example.dgenlibrary.ui.theme.PitagonsSans
 import com.example.dgenlibrary.ui.theme.dgenGray
