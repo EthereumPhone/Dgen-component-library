@@ -17,6 +17,8 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.style.TextOverflow
+import androidx.compose.ui.platform.LocalView
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.example.dgenlibrary.ui.theme.DgenTheme
 import com.example.dgenlibrary.util.Haptics
@@ -59,4 +61,28 @@ fun ContactListItem(
             overflow = TextOverflow.Ellipsis
         )
     }
+}
+
+@Preview(showBackground = true, backgroundColor = 0xFF000000)
+@Composable
+private fun ContactListItemPreview() {
+    val view = LocalView.current
+    ContactListItem(
+        name = "John Doe",
+        primaryColor = Color.White,
+        onClick = {},
+        view = view
+    )
+}
+
+@Preview(showBackground = true, backgroundColor = 0xFF000000)
+@Composable
+private fun ContactListItemLongNamePreview() {
+    val view = LocalView.current
+    ContactListItem(
+        name = "Alexander Christopher Montgomery III",
+        primaryColor = Color.White,
+        onClick = {},
+        view = view
+    )
 }

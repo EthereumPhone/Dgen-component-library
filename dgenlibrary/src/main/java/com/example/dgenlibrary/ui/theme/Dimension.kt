@@ -19,3 +19,18 @@ val header2_fontSize = 60.sp
 val header1_fontSize = 72.sp
 val header0_fontSize = 128.sp
 
+
+val smallDuration = 200 //ms
+val mediumEnterDuration = 300 //ms
+val mediumExitDuration = 250 //ms
+
+val largeEnterDuration = 500 //ms
+val largeExitDuration = 400 //ms
+
+val extraLargeEnterDuration = 2000 //ms
+val extraLargeExitDuration = 1500 //ms
+
+val ghostOpacity = 0.1f
+val pulseOpacity = 0.5f
+val neonOpacity = 0.75f
+

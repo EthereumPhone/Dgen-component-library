@@ -16,14 +16,6 @@ val dgenOcean = Color(0xFF24353B)
 val dgenTurqoise = Color(0xFFBFD6EA)
 val dgenBurgendy = Color(0xFF3B2424)
 
-// Opacity constants
-const val neonOpacity = 0.75f
-const val pulseOpacity = 0.25f
-
-// Animation durations
-const val mediumEnterDuration = 300
-const val mediumExitDuration = 200
-
 // Color - LAZER
 val lazerBurn = Color(0xFF1E0505)
 val lazerCore = Color(0xFFFF0000)
