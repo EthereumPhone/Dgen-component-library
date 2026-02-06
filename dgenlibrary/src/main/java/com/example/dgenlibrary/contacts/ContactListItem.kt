@@ -21,6 +21,7 @@ import androidx.compose.ui.platform.LocalView
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.example.dgenlibrary.ui.theme.DgenTheme
+import com.example.dgenlibrary.ui.theme.dgenWhite
 import com.example.dgenlibrary.util.Haptics
 
 @Composable
@@ -56,7 +57,7 @@ fun ContactListItem(
         Text(
             text = name,
             style = DgenTheme.typography.body2,
-            color = primaryColor,
+            color = dgenWhite,
             maxLines = 2,
             overflow = TextOverflow.Ellipsis
         )
