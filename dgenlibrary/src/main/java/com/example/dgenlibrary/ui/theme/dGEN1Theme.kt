@@ -238,8 +238,8 @@ fun DgenTheme(
             fontFamily = PitagonsSans,
             color = dgenWhite,
             fontWeight = FontWeight.SemiBold,
-            fontSize = 32.sp,
-            lineHeight = 32.sp,
+            fontSize = body2_fontSize,
+            lineHeight = body2_fontSize,
             letterSpacing = 0.sp,
             textDecoration = TextDecoration.None
         ),
@@ -247,8 +247,8 @@ fun DgenTheme(
             fontFamily = PitagonsSans,
             color = dgenWhite,
             fontWeight = FontWeight.SemiBold,
-            fontSize = 24.sp,
-            lineHeight = 24.sp,
+            fontSize = body1_fontSize,
+            lineHeight = body1_fontSize,
             letterSpacing = 0.sp,
             textDecoration = TextDecoration.None
         ),
@@ -256,8 +256,8 @@ fun DgenTheme(
             fontFamily = PitagonsSans,
             color = dgenBlack,
             fontWeight = FontWeight.SemiBold,
-            fontSize = 24.sp,
-            lineHeight = 24.sp,
+            fontSize = button_fontSize,
+            lineHeight = button_fontSize,
             letterSpacing = 0.sp,
             textDecoration = TextDecoration.None
         ),
@@ -265,8 +265,8 @@ fun DgenTheme(
             fontFamily = SpaceMono,
             color = dgenWhite,
             fontWeight = FontWeight.Normal,
-            fontSize = 16.sp,
-            lineHeight = 16.sp,
+            fontSize = label_fontSize,
+            lineHeight = label_fontSize,
             letterSpacing = 0.sp,
             textDecoration = TextDecoration.None
         ),
