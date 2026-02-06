@@ -5,7 +5,6 @@ import androidx.compose.animation.core.LinearEasing
 import androidx.compose.animation.core.tween
 import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
-import androidx.compose.foundation.clickable
 import androidx.compose.foundation.gestures.detectTapGestures
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -37,11 +36,13 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.TextRange
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.input.TextFieldValue
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextDecoration
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.compose.ui.platform.LocalFocusManager
 import com.example.dgenlibrary.SystemColorManager.primaryColor
 import com.example.dgenlibrary.ui.theme.SpaceMono
 import com.example.dgenlibrary.ui.theme.body1_fontSize
@@ -69,6 +70,8 @@ fun BoxScope.SearchBar(
     var internalTfv by remember {
         mutableStateOf(TextFieldValue(text = searchValue, selection = TextRange(searchValue.length)))
     }
+    val isAnyFieldFocused = remember { mutableStateOf(false) }
+    val focusManager = LocalFocusManager.current
 
     // Synchronize internalTfv with searchValue from parent if it changes externally.
     LaunchedEffect(searchValue) {
@@ -120,7 +123,7 @@ fun BoxScope.SearchBar(
                     }
             ) {
                 Icon(
-                    painter = painterResource(R.drawable.backicon),
+                    painter = painterResource(R.drawable.back_icon),
                     contentDescription = "Search",
                     tint = primaryColor,
                     modifier = modifier.size(24.dp)
@@ -158,8 +161,9 @@ fun BoxScope.SearchBar(
                     .onFocusChanged { focusState ->
                         onFocusChanged(focusState.isFocused)
                     },
-                focusRequester = focusRequester,
-                keyboardController = keyboardController,
+                keyboardtype = KeyboardType.Text,
+                isAnyFieldFocused = isAnyFieldFocused,
+                textfieldFocusManager = focusManager,
                 placeholder = {
                     Text(
                         modifier = modifier.fillMaxWidth(),

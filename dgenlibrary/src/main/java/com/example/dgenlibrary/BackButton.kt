@@ -30,7 +30,7 @@ fun BackButton(
         onClick = onClick
     ) {
         Icon(
-            painter = painterResource(R.drawable.backicon),
+            painter = painterResource(R.drawable.back_icon),
             contentDescription = "BackButton",
             modifier = modifier.size(size).graphicsLayer { translationX = -20f },
             tint = color
