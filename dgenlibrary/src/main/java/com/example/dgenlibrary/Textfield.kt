@@ -22,7 +22,10 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.BasicTextField
 import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
+import androidx.compose.foundation.text.selection.LocalTextSelectionColors
+import androidx.compose.foundation.text.selection.TextSelectionColors
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -34,6 +37,8 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.drawBehind
 import androidx.compose.ui.focus.FocusManager
+import androidx.compose.ui.focus.FocusRequester
+import androidx.compose.ui.focus.focusRequester
 import androidx.compose.ui.focus.onFocusChanged
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Color
@@ -47,6 +52,7 @@ import androidx.compose.ui.input.key.onKeyEvent
 import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.platform.LocalHapticFeedback
+import androidx.compose.ui.platform.SoftwareKeyboardController
 import androidx.compose.ui.text.TextLayoutResult
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.input.ImeAction
@@ -158,18 +164,19 @@ fun DgenBasicTextfield(
 
 @SuppressLint("SuspiciousIndentation")
 @Composable
-fun DgenBasicTextfieldTwo(
-    value: String,
-    onValueChange: (String) -> Unit,
+fun DgenBasicTextfield(
+    value: TextFieldValue = TextFieldValue(""),
+    onValueChange: (TextFieldValue) -> Unit,
     keyboardtype: KeyboardType =  KeyboardType.Text,
-    isAnyFieldFocused: MutableState<Boolean>,
     textfieldFocusManager: FocusManager? = null,
+    focusRequester: FocusRequester,
+    keyboardController: SoftwareKeyboardController?,
     modifier: Modifier = Modifier,
     enabled: Boolean = true,
     readOnly: Boolean = false,
     minLines: Int = 1,
     interactionSource: MutableInteractionSource = remember { MutableInteractionSource() },
-    maxLines: Int = 100,
+    maxLines: Int = 1,
     cursorColor: Color = DgenTheme.colors.dgenWhite,
     cursorWidth: Dp = 12.dp,
     cursorHeight: Dp = 32.dp,
@@ -178,7 +185,7 @@ fun DgenBasicTextfieldTwo(
 ) {
     var textLayoutResult by remember { mutableStateOf<TextLayoutResult?>(null) }
 
-    var isFocused by remember { mutableStateOf(false) }
+    var isFocused by remember { mutableStateOf(true) }
     val focusManager = textfieldFocusManager ?: LocalFocusManager.current
 
     val cursorAlpha by rememberInfiniteTransition().animateFloat(
@@ -190,51 +197,79 @@ fun DgenBasicTextfieldTwo(
         )
     )
 
+    val customTextSelectionColors = TextSelectionColors(
+        handleColor = Color.Transparent,     // <- Hides the handle
+        backgroundColor = Color.Transparent  // <- Optional: also hides selection highlight
+    )
+
+
+
+
+
+
     Box(
         modifier = modifier,
-        contentAlignment = Alignment.Center
+        contentAlignment = Alignment.CenterStart
     ) {
-        if (value.isEmpty()) {
-            if (placeholder != null && !isFocused) {
-                placeholder()
-            }
+        if (value.text.isEmpty()){
+            placeholder?.invoke()
         }
 
-        BasicTextField(
-            value = value,
-            onValueChange = onValueChange,
-            modifier = modifier
-                .fillMaxWidth()
 
-                .onFocusChanged { focusState ->
-                    isFocused = focusState.isFocused
-                    isAnyFieldFocused.value = focusState.isFocused
-                }
-            ,
-            keyboardOptions = KeyboardOptions.Default.copy(
-                imeAction = ImeAction.Done,
-                keyboardType = keyboardtype
-            ),
+        CompositionLocalProvider(LocalTextSelectionColors provides customTextSelectionColors) {
+            BasicTextField(
+                value = value,
+                onValueChange = onValueChange,
+                modifier = modifier
+                    .fillMaxWidth()
+                    .drawBehind {
+                        if (isFocused){
+                            textLayoutResult?.let {
+                                val cursorRect = it.getCursorRect(value.selection.start)
+                                val cursorX = cursorRect.left
+                                val maxCursorX = size.width - cursorWidth.toPx()
+                                val clampedCursorX = cursorX.coerceIn(0f, maxCursorX)
+                                drawRect(
+                                    color = cursorColor,
+                                    topLeft = Offset(clampedCursorX, ((cursorRect.top + cursorRect.bottom) / 2 ) - (cursorHeight.toPx() /2)),
+                                    size = androidx.compose.ui.geometry.Size(cursorWidth.toPx(), cursorHeight.toPx()),
+                                    alpha = cursorAlpha
+                                )
+                            }
+                        }
+                    }
+                    .focusRequester(focusRequester)
+                    .onFocusChanged { focusState ->
+                        isFocused = focusState.isFocused
+                    }
+                ,
+                keyboardOptions = KeyboardOptions.Default.copy(
+                    imeAction = ImeAction.Done,
+                    keyboardType = keyboardtype
+                ),
 
-            keyboardActions = KeyboardActions(
-                onGo = {
-                    isFocused = true
-                },
-                onDone = {
-                    focusManager.clearFocus() // Fokus entfernen, wenn Enter gedrückt wird
-                    isFocused = false
-                }
-            ),
-            textStyle = textStyle,
-            visualTransformation = VisualTransformation.None, // Ensure no transformations
-            enabled = enabled,
-            readOnly = readOnly,
-            cursorBrush = SolidColor(Color.Unspecified),
-            minLines = minLines,
-            maxLines = maxLines,
-            interactionSource = interactionSource,
-            onTextLayout = { textLayoutResult = it }
-        )
+                keyboardActions = KeyboardActions(
+                    onGo = {
+                        isFocused = false
+                    },
+                    onDone = {
+                        focusManager.clearFocus() // Fokus entfernen, wenn Enter gedrückt wird
+                        isFocused = false
+                    }
+                ),
+                textStyle = textStyle,
+                visualTransformation = VisualTransformation.None, // Ensure no transformations
+                enabled = enabled,
+                readOnly = readOnly,
+                cursorBrush = SolidColor(Color.Unspecified),
+                minLines = minLines,
+                maxLines = maxLines,
+                interactionSource = interactionSource,
+                onTextLayout = { textLayoutResult = it },
+                singleLine = true
+            )
+        }
+
 
     }
 
