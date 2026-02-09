@@ -70,7 +70,6 @@ fun BoxScope.SearchBar(
     var internalTfv by remember {
         mutableStateOf(TextFieldValue(text = searchValue, selection = TextRange(searchValue.length)))
     }
-    val isAnyFieldFocused = remember { mutableStateOf(false) }
     val focusManager = LocalFocusManager.current
 
     // Synchronize internalTfv with searchValue from parent if it changes externally.
@@ -162,8 +161,9 @@ fun BoxScope.SearchBar(
                         onFocusChanged(focusState.isFocused)
                     },
                 keyboardtype = KeyboardType.Text,
-                isAnyFieldFocused = isAnyFieldFocused,
                 textfieldFocusManager = focusManager,
+                focusRequester = focusRequester,
+                keyboardController = keyboardController,
                 placeholder = {
                     Text(
                         modifier = modifier.fillMaxWidth(),

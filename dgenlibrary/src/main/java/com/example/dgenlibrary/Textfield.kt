@@ -70,20 +70,23 @@ import com.example.dgenlibrary.ui.theme.dgenBlack
 fun DgenBasicTextfield(
     value: TextFieldValue = TextFieldValue(""),
     onValueChange: (TextFieldValue) -> Unit,
-    keyboardtype: KeyboardType =  KeyboardType.Text,
-    isAnyFieldFocused: MutableState<Boolean>,
+    keyboardtype: KeyboardType = KeyboardType.Text,
+    isAnyFieldFocused: MutableState<Boolean>? = null,
     textfieldFocusManager: FocusManager? = null,
+    focusRequester: FocusRequester? = null,
+    keyboardController: SoftwareKeyboardController? = null,
     modifier: Modifier = Modifier,
     enabled: Boolean = true,
     readOnly: Boolean = false,
     minLines: Int = 1,
     interactionSource: MutableInteractionSource = remember { MutableInteractionSource() },
     maxLines: Int = 100,
+    maxLength: Int = Int.MAX_VALUE,
     cursorColor: Color = DgenTheme.colors.dgenWhite,
     cursorWidth: Dp = 12.dp,
     cursorHeight: Dp = 32.dp,
     textStyle: TextStyle = DgenTheme.typography.body2,
-    placeholder: @Composable() (() -> Unit)? = null,
+    placeholder: @Composable (() -> Unit)? = null,
 ) {
     var textLayoutResult by remember { mutableStateOf<TextLayoutResult?>(null) }
 
@@ -99,131 +102,33 @@ fun DgenBasicTextfield(
         )
     )
 
-    Box(
-        modifier = modifier,
-        contentAlignment = Alignment.Center
-    ) {
-        if (value.text.isEmpty()) {
-            if (placeholder != null && !isFocused) {
-                placeholder()
-            }
-        }
-
-        BasicTextField(
-            value = value,
-            onValueChange = onValueChange,
-            modifier = modifier
-                .fillMaxWidth()
-                .drawBehind {
-                    if (isFocused){
-                        textLayoutResult?.let {
-                            val cursorRect = it.getCursorRect(value.selection.start)
-                            drawRect(
-                                color = cursorColor,
-                                topLeft = Offset(cursorRect.left, ((cursorRect.top + cursorRect.bottom) / 2 ) - (cursorHeight.toPx() /2)),
-                                size = androidx.compose.ui.geometry.Size(cursorWidth.toPx(), cursorHeight.toPx()),
-                                alpha = cursorAlpha
-                            )
-                        }
-                    }
-
-                }
-                .onFocusChanged { focusState ->
-                    isFocused = focusState.isFocused
-                    isAnyFieldFocused.value = focusState.isFocused
-                }
-            ,
-            keyboardOptions = KeyboardOptions.Default.copy(
-                imeAction = ImeAction.Done,
-                keyboardType = keyboardtype
-            ),
-
-            keyboardActions = KeyboardActions(
-                onGo = {
-                    isFocused = true
-                },
-                onDone = {
-                    focusManager.clearFocus() // Fokus entfernen, wenn Enter gedrückt wird
-                    isFocused = false
-                }
-            ),
-            textStyle = textStyle,
-            visualTransformation = VisualTransformation.None, // Ensure no transformations
-            enabled = enabled,
-            readOnly = readOnly,
-            cursorBrush = SolidColor(Color.Unspecified),
-            minLines = minLines,
-            maxLines = maxLines,
-            interactionSource = interactionSource,
-            onTextLayout = { textLayoutResult = it }
-        )
-
-    }
-
-}
-
-@SuppressLint("SuspiciousIndentation")
-@Composable
-fun DgenBasicTextfield(
-    value: TextFieldValue = TextFieldValue(""),
-    onValueChange: (TextFieldValue) -> Unit,
-    keyboardtype: KeyboardType =  KeyboardType.Text,
-    textfieldFocusManager: FocusManager? = null,
-    focusRequester: FocusRequester,
-    keyboardController: SoftwareKeyboardController?,
-    modifier: Modifier = Modifier,
-    enabled: Boolean = true,
-    readOnly: Boolean = false,
-    minLines: Int = 1,
-    interactionSource: MutableInteractionSource = remember { MutableInteractionSource() },
-    maxLines: Int = 1,
-    cursorColor: Color = DgenTheme.colors.dgenWhite,
-    cursorWidth: Dp = 12.dp,
-    cursorHeight: Dp = 32.dp,
-    textStyle: TextStyle = DgenTheme.typography.body2,
-    placeholder: @Composable() (() -> Unit)? = null,
-) {
-    var textLayoutResult by remember { mutableStateOf<TextLayoutResult?>(null) }
-
-    var isFocused by remember { mutableStateOf(true) }
-    val focusManager = textfieldFocusManager ?: LocalFocusManager.current
-
-    val cursorAlpha by rememberInfiniteTransition().animateFloat(
-        initialValue = 1f,
-        targetValue = 0f,
-        animationSpec = infiniteRepeatable(
-            animation = tween(durationMillis = 500, easing = LinearEasing),
-            repeatMode = RepeatMode.Reverse
-        )
-    )
-
     val customTextSelectionColors = TextSelectionColors(
-        handleColor = Color.Transparent,     // <- Hides the handle
-        backgroundColor = Color.Transparent  // <- Optional: also hides selection highlight
+        handleColor = Color.Transparent,
+        backgroundColor = Color.Transparent
     )
 
-
-
-
-
+    val filteredOnValueChange: (TextFieldValue) -> Unit = { newValue ->
+        if (newValue.text.length <= maxLength) {
+            onValueChange(newValue)
+        }
+    }
 
     Box(
         modifier = modifier,
         contentAlignment = Alignment.CenterStart
     ) {
-        if (value.text.isEmpty()){
+        if (value.text.isEmpty()) {
             placeholder?.invoke()
         }
-
 
         CompositionLocalProvider(LocalTextSelectionColors provides customTextSelectionColors) {
             BasicTextField(
                 value = value,
-                onValueChange = onValueChange,
-                modifier = modifier
+                onValueChange = filteredOnValueChange,
+                modifier = Modifier
                     .fillMaxWidth()
                     .drawBehind {
-                        if (isFocused){
+                        if (isFocused) {
                             textLayoutResult?.let {
                                 val cursorRect = it.getCursorRect(value.selection.start)
                                 val cursorX = cursorRect.left
@@ -231,34 +136,36 @@ fun DgenBasicTextfield(
                                 val clampedCursorX = cursorX.coerceIn(0f, maxCursorX)
                                 drawRect(
                                     color = cursorColor,
-                                    topLeft = Offset(clampedCursorX, ((cursorRect.top + cursorRect.bottom) / 2 ) - (cursorHeight.toPx() /2)),
+                                    topLeft = Offset(clampedCursorX, ((cursorRect.top + cursorRect.bottom) / 2) - (cursorHeight.toPx() / 2)),
                                     size = androidx.compose.ui.geometry.Size(cursorWidth.toPx(), cursorHeight.toPx()),
                                     alpha = cursorAlpha
                                 )
                             }
                         }
                     }
-                    .focusRequester(focusRequester)
+                    .then(
+                        if (focusRequester != null) Modifier.focusRequester(focusRequester)
+                        else Modifier
+                    )
                     .onFocusChanged { focusState ->
                         isFocused = focusState.isFocused
-                    }
-                ,
+                        isAnyFieldFocused?.value = focusState.isFocused
+                    },
                 keyboardOptions = KeyboardOptions.Default.copy(
                     imeAction = ImeAction.Done,
                     keyboardType = keyboardtype
                 ),
-
                 keyboardActions = KeyboardActions(
                     onGo = {
                         isFocused = false
                     },
                     onDone = {
-                        focusManager.clearFocus() // Fokus entfernen, wenn Enter gedrückt wird
+                        focusManager.clearFocus()
                         isFocused = false
                     }
                 ),
                 textStyle = textStyle,
-                visualTransformation = VisualTransformation.None, // Ensure no transformations
+                visualTransformation = VisualTransformation.None,
                 enabled = enabled,
                 readOnly = readOnly,
                 cursorBrush = SolidColor(Color.Unspecified),
@@ -266,11 +173,9 @@ fun DgenBasicTextfield(
                 maxLines = maxLines,
                 interactionSource = interactionSource,
                 onTextLayout = { textLayoutResult = it },
-                singleLine = true
+                singleLine = maxLines == 1
             )
         }
-
-
     }
 
 }

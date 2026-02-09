@@ -15,6 +15,7 @@ import androidx.compose.animation.core.ExperimentalAnimationSpecApi
 import androidx.compose.animation.core.FastOutLinearInEasing
 import androidx.compose.animation.core.FastOutSlowInEasing
 import androidx.compose.animation.core.animate
+import androidx.compose.animation.animateColorAsState
 import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.animation.core.keyframes
 import androidx.compose.animation.core.tween
@@ -60,6 +61,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.dgenlibrary.ui.theme.PitagonsSans
 import com.example.dgenlibrary.ui.theme.dgenBurgendy
+import com.example.dgenlibrary.ui.theme.dgenBlack
 import com.example.dgenlibrary.ui.theme.dgenOcean
 import com.example.dgenlibrary.ui.theme.dgenRed
 import com.example.dgenlibrary.ui.theme.dgenTurqoise
@@ -78,44 +80,47 @@ import kotlinx.coroutines.delay
 import java.util.Locale
 
 @SuppressLint("SuspiciousIndentation")
-@OptIn(ExperimentalSharedTransitionApi::class)
 @Composable
 fun Card(
+    isFirst: Boolean = true,
     modifier: Modifier = Modifier,
     rotation: Float = 0f,
     frontSide: @Composable () -> Unit = {},
     backSide: @Composable () -> Unit = {},
-//    sharedTransitionScope: SharedTransitionScope,
-//    animatedVisibilityScope: AnimatedVisibilityScope,
+    primaryColor: Color = dgenTurqoise,
+    secondaryColor: Color = dgenOcean,
 ){
-    val decimalFormat = DecimalFormat("0.00").apply {
-        decimalFormatSymbols = DecimalFormatSymbols(Locale.US) // Forces the decimal point
-    }
+    val baseColor by animateColorAsState(if (isFirst) secondaryColor else dgenBlack, tween(300))
 
-    val frontVisible = rotation < 90f
-    val backVisible = rotation > 90f
-
-//    with(sharedTransitionScope) {
-        Surface(
-            color = dgenOcean,
-            modifier = modifier
-                .aspectRatio(16f / 9f)
-                .fillMaxWidth()
-                .clip(RoundedCornerShape(0.dp))
-                .border(1.dp, Color.White, RoundedCornerShape(0.dp))
+    Surface(
+        color = baseColor,
+        shape = RoundedCornerShape(0.dp),
+        modifier = modifier
+            .aspectRatio(16f / 9f)
+            .fillMaxWidth()
+            .clip(RoundedCornerShape(0.dp))
+            .border(2.dp, primaryColor, RoundedCornerShape(0.dp))
+    ) {
+        Box(
+            Modifier.fillMaxSize()
         ) {
+            val frontVisible = rotation < 90f
+            AnimatedVisibility(
+                modifier = Modifier.fillMaxSize(),
+                visible = frontVisible,
+                enter = fadeIn(tween(300)),
+                exit  = fadeOut(tween(300))
+            ) { frontSide() }
 
-
-            if (frontVisible) {
-                frontSide()
-            }
-            if (backVisible) {
-                backSide()
-            }
-
+            val backVisible = rotation > 90f
+            AnimatedVisibility(
+                modifier = Modifier.fillMaxSize(),
+                visible = backVisible,
+                enter = fadeIn(tween(300)),
+                exit  = fadeOut(tween(300))
+            ) { backSide() }
         }
-//    }
-
+    }
 }
 
 fun formatSmart(value: Double): String {
@@ -147,18 +152,16 @@ fun abbreviateNumber(value: Double): String {
 @Composable
 fun PreviewCard(){
     Card(
-//        backgroundColor = Color(0xFF1E5A9C),
         frontSide = {
-            IdleView(
-                amount = 0.13,
-                tokenName = "USDC",
-                fiatAmount = 209.47,
-//                chainList = listOf(1,10,8453,42161),
-                icon = R.drawable.usdc,
-            )
+//            IdleView(
+//                amount = 0.13,
+//                tokenName = "USDC",
+//                fiatAmount = 209.47,
+//                icon = R.drawable.usdc,
+//            )
         },
-//        cardId = "asset_1"
-
+        primaryColor = dgenTurqoise,
+        secondaryColor = dgenOcean
     )
 }
 
@@ -167,13 +170,19 @@ fun PreviewCard(){
 fun CardPreviewDDevice(){
     Card(
         frontSide = {
-            IdleView(
-                amount = 0.13,
-                tokenName = "USDC",
-                fiatAmount = 209.47,
-                icon = R.drawable.usdc,
-            )
+//            IdleView(
+//                amount = 0.13,
+//                tokenName = "USDC",
+//                fiatAmount = 209.47,
+//                icon = R.drawable.usdc,
+//                modifier = TODO(),
+//                navigateToSend = TODO(),
+//                enableSend = TODO(),
+//                primaryColor = TODO(),
+//            )
         },
+        primaryColor = dgenTurqoise,
+        secondaryColor = dgenOcean
     )
 }
 
