@@ -102,7 +102,8 @@ fun DgenHeaderGlobeBackground(
     }
 }
 
-@Preview(showBackground = true)
+@Preview(device = "spec:width=720px,height=720px,dpi=240", name = "DDevice")
+
 @Composable
 private fun DgenHeaderBackgroundPreview() {
     DgenHeaderBackground(
@@ -117,6 +118,25 @@ private fun DgenHeaderBackgroundPreview() {
         ) {
             Text(text = "Content goes here")
             Text(text = "More content below the header")
+        }
+    }
+}
+
+@Preview(device = "spec:width=720px,height=720px,dpi=240", name = "DDevice")
+@Composable
+private fun DgenHeaderGlobeBackgroundPreview() {
+    DgenHeaderGlobeBackground(
+        title = "Header",
+        onBackClick = {}
+    ) {
+        Column(
+            modifier = Modifier
+                .fillMaxSize()
+                .padding(12.dp),
+            verticalArrangement = Arrangement.spacedBy(8.dp)
+        ) {
+            Text(text = "Content goes here", color = Color.White)
+            Text(text = "More content below the header", color = Color.White)
         }
     }
 }

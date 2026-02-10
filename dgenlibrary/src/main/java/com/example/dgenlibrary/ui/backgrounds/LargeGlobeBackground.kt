@@ -7,6 +7,7 @@ import androidx.compose.foundation.layout.aspectRatio
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.offset
 import androidx.compose.runtime.Composable
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.draw.scale
@@ -62,20 +63,24 @@ fun LargeGlobeBackground(
     Box(
         modifier = modifier
             .fillMaxSize()
-            .background(backgroundColor)
+            .background(backgroundColor),
+        contentAlignment = Alignment.Center
     ) {
         AsyncImage(
             imageLoader = gifEnabledLoader,
             model = R.drawable.globe_wireframe,
             contentDescription = null,
             modifier = Modifier
+                .fillMaxSize()
                 .alpha(globeAlpha)
                 .offset(x = globeOffsetX, y = globeOffsetY)
                 .scale(globeScale)
                 .aspectRatio(1f),
             colorFilter = ColorFilter.tint(primaryColor.copy(pulseOpacity))
         )
-        content()
+        Box(modifier = modifier.fillMaxSize()) {
+            content()
+        }
     }
 }
 
