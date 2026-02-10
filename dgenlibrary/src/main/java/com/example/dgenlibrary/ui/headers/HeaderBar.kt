@@ -17,6 +17,7 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableLongStateOf
+import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
@@ -41,9 +42,11 @@ import com.example.dgenlibrary.ui.theme.mediumExitDuration
  * A reusable header bar component with optional title text, custom content, and close button.
  *
  * @param modifier Modifier to be applied to the header bar
- * @param text Optional title text. If empty, content slot will be used instead
+ * @param text Optional title text. If empty and no logoContent, content slot will be used instead
  * @param enableCancel Whether to show the close button
- * @param content Custom content to display when text is empty
+ * @param content Custom content to display when text is empty and no logoContent
+ * @param logoContent Optional composable for displaying a logo between text and trailingText
+ * @param trailingText Optional text displayed after the logo (e.g. token symbol)
  * @param primaryColor The primary color for text and icons
  * @param onClick Callback when the close button is clicked
  */
@@ -53,11 +56,14 @@ fun HeaderBar(
     text: String = "",
     enableCancel: Boolean = true,
     content: @Composable () -> Unit = {},
+    logoContent: @Composable (() -> Unit)? = null,
+    trailingText: String = "",
     primaryColor: Color,
     onClick: () -> Unit = {}
 ) {
     // Debouncing state to prevent multiple rapid clicks
     var lastClickTime by remember { mutableLongStateOf(0L) }
+    var hasClicked by remember { mutableStateOf(false) }
     val debounceDelay = 500L
 
     Row(
@@ -68,25 +74,66 @@ fun HeaderBar(
         verticalAlignment = Alignment.CenterVertically,
         horizontalArrangement = Arrangement.SpaceBetween
     ) {
-        if (text == "") {
-            Box(modifier = Modifier.weight(1f, fill = false)) {
-                content()
+        when {
+            // Logo mode: show text + logo + optional trailing text
+            logoContent != null -> {
+                Row(
+                    verticalAlignment = Alignment.CenterVertically,
+                    horizontalArrangement = Arrangement.spacedBy(8.dp),
+                    modifier = Modifier.weight(1f, fill = false)
+                ) {
+                    if (text.isNotEmpty()) {
+                        Text(
+                            text = text.uppercase(),
+                            style = TextStyle(
+                                fontFamily = SpaceMono,
+                                color = primaryColor,
+                                fontWeight = FontWeight.Medium,
+                                fontSize = 24.sp,
+                                letterSpacing = 0.sp,
+                                textDecoration = TextDecoration.None
+                            )
+                        )
+                    }
+                    logoContent()
+                    if (trailingText.isNotEmpty()) {
+                        Text(
+                            text = trailingText.uppercase(),
+                            style = TextStyle(
+                                fontFamily = SpaceMono,
+                                color = primaryColor,
+                                fontWeight = FontWeight.Medium,
+                                fontSize = 24.sp,
+                                letterSpacing = 0.sp,
+                                textDecoration = TextDecoration.None
+                            )
+                        )
+                    }
+                }
             }
-        } else {
-            Text(
-                text = text.uppercase(),
-                style = TextStyle(
-                    fontFamily = SpaceMono,
-                    color = primaryColor,
-                    fontWeight = FontWeight.Medium,
-                    fontSize = 24.sp,
-                    letterSpacing = 0.sp,
-                    textDecoration = TextDecoration.None
-                ),
-                maxLines = 1,
-                overflow = TextOverflow.Ellipsis,
-                modifier = Modifier.weight(1f, fill = false)
-            )
+            // Custom content mode: use content slot
+            text.isEmpty() -> {
+                Box(modifier = Modifier.weight(1f, fill = false)) {
+                    content()
+                }
+            }
+            // Simple text mode
+            else -> {
+                Text(
+                    text = text.uppercase(),
+                    style = TextStyle(
+                        fontFamily = SpaceMono,
+                        color = primaryColor,
+                        fontWeight = FontWeight.Medium,
+                        fontSize = 24.sp,
+                        letterSpacing = 0.sp,
+                        textDecoration = TextDecoration.None
+                    ),
+                    maxLines = 1,
+                    overflow = TextOverflow.Ellipsis,
+                    modifier = Modifier.weight(1f, fill = false)
+                )
+            }
         }
 
         AnimatedVisibility(
@@ -97,10 +144,12 @@ fun HeaderBar(
         ) {
             IconButton(
                 modifier = Modifier.size(56.dp),
+                enabled = !hasClicked,
                 onClick = {
                     val currentTime = System.currentTimeMillis()
-                    if (currentTime - lastClickTime >= debounceDelay) {
+                    if (!hasClicked && currentTime - lastClickTime >= debounceDelay) {
                         lastClickTime = currentTime
+                        hasClicked = true
                         onClick()
                     }
                 }
@@ -140,6 +189,7 @@ fun HeaderBarWithEpoch(
     onClick: () -> Unit = {}
 ) {
     var lastClickTime by remember { mutableLongStateOf(0L) }
+    var hasClicked by remember { mutableStateOf(false) }
     val debounceDelay = 500L
 
     Row(
@@ -194,10 +244,12 @@ fun HeaderBarWithEpoch(
         ) {
             IconButton(
                 modifier = Modifier.size(56.dp),
+                enabled = !hasClicked,
                 onClick = {
                     val currentTime = System.currentTimeMillis()
-                    if (currentTime - lastClickTime >= debounceDelay) {
+                    if (!hasClicked && currentTime - lastClickTime >= debounceDelay) {
                         lastClickTime = currentTime
+                        hasClicked = true
                         onClick()
                     }
                 }
