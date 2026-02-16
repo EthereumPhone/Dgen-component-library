@@ -8,6 +8,7 @@ val IconSize = 24.0.dp
 val IconButtonSize = 60.0.dp
 
 
+val smalllabel_fontSize = 14.sp
 val tag_fontSize = 12.sp
 val label_fontSize = 20.sp
 val button_fontSize = 20.sp

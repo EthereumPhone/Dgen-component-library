@@ -51,6 +51,8 @@ dependencies {
 
     implementation(libs.compose.ui.tooling.preview)
     implementation(libs.androidx.animation.android)
+    implementation("androidx.compose.material:material")
+    implementation("androidx.compose.material:material-icons-extended")
     debugImplementation(libs.compose.ui.tooling)
 
     // Coil for image loading

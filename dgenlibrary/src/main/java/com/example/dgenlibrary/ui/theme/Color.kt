@@ -35,3 +35,7 @@ val oceanCore = Color(0xFF00E4FF)
 // Color - GUNMETAL
 val gunMetalForge = Color(0xFF1C1C1C)
 val gunMetalCore = Color(0xFFC8C8C8)
+
+// Utility grays
+val dgenDarkGray = Color(0xFF1A1A1A)
+val dgenMediumGray = Color(0xFF808080)
