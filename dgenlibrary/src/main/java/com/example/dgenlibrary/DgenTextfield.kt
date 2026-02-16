@@ -566,6 +566,247 @@ private fun SimpleTextSelectionMenuButton(
     }
 }
 
+// ==================== DOLLAR TEXTFIELD ====================
+
+/**
+ * A variant of SimpleDgenTextfield that prepends a dollar sign ("$") to the input.
+ * The dollar sign fades in/out based on the signOpacity parameter.
+ *
+ * @param value Current text field value
+ * @param onValueChange Callback when the value changes
+ * @param keyboardtype Keyboard type (defaults to Number)
+ * @param autoCorrectEnabled Whether auto-correct is enabled
+ * @param textfieldFocusManager Optional focus manager
+ * @param onEditDone Callback when editing is complete
+ * @param onDoubleTap Callback for double-tap gesture
+ * @param modifier Modifier to be applied
+ * @param enabled Whether the text field is enabled
+ * @param readOnly Whether the text field is read-only
+ * @param singleLine Whether to restrict to a single line
+ * @param minLines Minimum number of lines
+ * @param maxLines Maximum number of lines
+ * @param maxLength Maximum character length
+ * @param interactionSource Interaction source for the text field
+ * @param shape Shape of the background
+ * @param backgroundColor Background color
+ * @param signOpacity Opacity of the dollar sign (0f = hidden, 1f = visible)
+ * @param cursorColor Color of the custom cursor
+ * @param cursorWidth Width of the custom cursor
+ * @param cursorHeight Height of the custom cursor
+ * @param activeColor Color used for active state background
+ * @param textStyle Style for the text content
+ * @param view Android View for focus handling
+ * @param placeholder Composable placeholder when field is empty and unfocused
+ * @param labelContent Optional label content above the field
+ */
+@OptIn(ExperimentalFoundationApi::class, ExperimentalComposeUiApi::class)
+@Composable
+fun DollarDgenTextfield(
+    value: TextFieldValue = TextFieldValue(""),
+    onValueChange: (TextFieldValue) -> Unit,
+    keyboardtype: KeyboardType = KeyboardType.Number,
+    autoCorrectEnabled: Boolean = true,
+    textfieldFocusManager: FocusManager? = null,
+    onEditDone: () -> Unit,
+    onDoubleTap: () -> Unit = {},
+    modifier: Modifier = Modifier,
+    enabled: Boolean = true,
+    readOnly: Boolean = false,
+    singleLine: Boolean = true,
+    minLines: Int = 1,
+    maxLines: Int = Int.MAX_VALUE,
+    maxLength: Int = 100,
+    interactionSource: MutableInteractionSource = remember { MutableInteractionSource() },
+    shape: Shape = RoundedCornerShape(8.dp),
+    backgroundColor: Color = dgenOcean,
+    signOpacity: Float,
+    cursorColor: Color = dgenWhite,
+    cursorWidth: Dp = 18.dp,
+    cursorHeight: Dp = 32.dp,
+    activeColor: Color = dgenOcean,
+    textStyle: TextStyle = TextStyle(
+        fontFamily = PitagonsSans,
+        color = dgenWhite,
+        fontWeight = FontWeight.SemiBold,
+        fontSize = body2_fontSize
+    ),
+    view: View,
+    placeholder: @Composable (() -> Unit)? = null,
+    labelContent: @Composable (() -> Unit)? = null,
+) {
+    var isFocused by remember { mutableStateOf(false) }
+
+    val focusManager = textfieldFocusManager ?: LocalFocusManager.current
+
+    val textToolbarState = remember { SimpleTextToolbarState(activeColor) }
+    val customTextToolbar = remember(textToolbarState) { SimpleTextToolbar(textToolbarState) }
+
+    val animatedBackgroundOpacity by animateFloatAsState(
+        targetValue = if (isFocused) ghostOpacity else 0f,
+        animationSpec = tween(durationMillis = 300),
+        label = "backgroundColor"
+    )
+
+    val haptics = LocalHapticFeedback.current
+
+    DisposableEffect(view, isFocused) {
+        val listener = ViewTreeObserver.OnGlobalFocusChangeListener { _, _ ->
+            if (isFocused && !view.hasFocus()) {
+                focusManager.clearFocus()
+            }
+        }
+
+        if (isFocused) {
+            view.viewTreeObserver.addOnGlobalFocusChangeListener(listener)
+        }
+
+        onDispose {
+            view.viewTreeObserver.removeOnGlobalFocusChangeListener(listener)
+        }
+    }
+
+    Row(
+        modifier = modifier
+            .fillMaxWidth()
+            .clip(shape)
+            .drawBehind {
+                drawRect(
+                    color = activeColor,
+                    size = size,
+                    topLeft = Offset(0f, 0f),
+                    alpha = animatedBackgroundOpacity
+                )
+            }
+            .padding(start = 12.dp, end = 12.dp, top = 8.dp, bottom = 8.dp)
+            .onKeyEvent {
+                if (it.nativeKeyEvent.keyCode == Key.Enter.nativeKeyCode) {
+                    focusManager.clearFocus()
+                    true
+                } else {
+                    false
+                }
+            },
+        horizontalArrangement = Arrangement.SpaceBetween,
+        verticalAlignment = Alignment.CenterVertically
+    ) {
+        Column(
+            modifier = Modifier.weight(1f),
+            verticalArrangement = Arrangement.spacedBy(6.dp),
+            horizontalAlignment = Alignment.Start
+        ) {
+            if (labelContent != null) {
+                labelContent()
+            }
+
+            val customTextSelectionColors = TextSelectionColors(
+                handleColor = Color.Transparent,
+                backgroundColor = cursorColor.copy(alpha = 0.2f)
+            )
+
+            val infiniteTransition = rememberInfiniteTransition()
+            val cursorAlpha by infiniteTransition.animateFloat(
+                initialValue = 1f,
+                targetValue = 0f,
+                animationSpec = infiniteRepeatable(
+                    animation = tween(500, easing = LinearEasing),
+                    repeatMode = RepeatMode.Reverse
+                ),
+                label = "cursorBlink"
+            )
+
+            var textLayoutResult by remember { mutableStateOf<TextLayoutResult?>(null) }
+            var multiLineOverflow by remember { mutableStateOf(false) }
+
+            CompositionLocalProvider(
+                LocalTextSelectionColors provides customTextSelectionColors,
+                LocalTextToolbar provides customTextToolbar
+            ) {
+                Box(
+                    contentAlignment = Alignment.CenterStart
+                ) {
+                    if (value.text.isEmpty() && placeholder != null && !isFocused) {
+                        placeholder()
+                    }
+
+                    Row(verticalAlignment = Alignment.CenterVertically) {
+                        MaterialText(
+                            text = "$",
+                            style = textStyle,
+                            color = dgenWhite.copy(alpha = signOpacity),
+                            modifier = Modifier.padding(end = 4.dp)
+                        )
+                        BasicTextField(
+                            value = value,
+                            onValueChange = { newValue ->
+                                if ("\n" in newValue.text) {
+                                    focusManager.clearFocus()
+                                    onEditDone()
+                                } else if (newValue.text.length <= maxLength) {
+                                    onValueChange(newValue)
+                                }
+                            },
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .padding(end = if (multiLineOverflow) 16.dp else 0.dp)
+                                .drawBehind {
+                                    if (isFocused && value.selection.collapsed) {
+                                        textLayoutResult?.let { tlr ->
+                                            val rect = tlr.getCursorRect(value.selection.start)
+                                            val y =
+                                                ((rect.top + rect.bottom) / 2) - (cursorHeight.toPx() / 2)
+                                            drawRect(
+                                                color = cursorColor.copy(alpha = cursorAlpha),
+                                                topLeft = Offset(
+                                                    rect.left.coerceIn(
+                                                        0f,
+                                                        size.width - cursorWidth.toPx()
+                                                    ), y
+                                                ),
+                                                size = Size(cursorWidth.toPx(), cursorHeight.toPx())
+                                            )
+                                        }
+                                    }
+                                }
+                                .onFocusChanged { focusState ->
+                                    if (isFocused && !focusState.isFocused) {
+                                        onEditDone()
+                                    }
+                                    isFocused = focusState.isFocused
+                                },
+                            textStyle = textStyle,
+                            enabled = enabled,
+                            readOnly = readOnly,
+                            singleLine = singleLine,
+                            minLines = minLines,
+                            maxLines = if (singleLine) 1 else maxLines,
+                            keyboardOptions = KeyboardOptions.Default.copy(
+                                imeAction = if (singleLine) ImeAction.Done else ImeAction.Default,
+                                keyboardType = keyboardtype,
+                                autoCorrect = autoCorrectEnabled
+                            ),
+                            keyboardActions = KeyboardActions(
+                                onDone = {
+                                    focusManager.clearFocus()
+                                    isFocused = false
+                                }
+                            ),
+                            visualTransformation = VisualTransformation.None,
+                            cursorBrush = SolidColor(Color.Transparent),
+                            interactionSource = interactionSource,
+                            onTextLayout = {
+                                textLayoutResult = it
+                                multiLineOverflow = it.lineCount > 1
+                            }
+                        )
+                    }
+                }
+            }
+        }
+    }
+
+    SimpleTextSelectionMenuContent(textToolbarState)
+}
+
 // ==================== PREVIEWS ====================
 
 /**
