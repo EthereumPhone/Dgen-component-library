@@ -5,6 +5,7 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.aspectRatio
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.offset
@@ -108,13 +109,73 @@ fun GlobeBackground(
 }
 
 /**
+ * A centered globe background with a composable content slot below the globe.
+ * Useful for status screens, overlays, and other full-screen centered displays.
+ *
+ * @param modifier Modifier to be applied to the screen
+ * @param imageSize Size of the globe animation
+ * @param gifEnabledLoader Optional custom ImageLoader for GIF support
+ * @param imageModel The image model to load (default: globe wireframe)
+ * @param primaryColor Primary color for the globe tint
+ * @param globeAlpha Alpha value for the globe color filter
+ * @param backgroundColor Background color of the screen
+ * @param content Composable content displayed below the globe
+ */
+@Composable
+fun GlobeBackground(
+    modifier: Modifier = Modifier,
+    imageSize: Dp = 350.dp,
+    gifEnabledLoader: ImageLoader? = null,
+    imageModel: Any? = R.drawable.globe_wireframe,
+    primaryColor: Color,
+    globeAlpha: Float = pulseOpacity,
+    backgroundColor: Color = dgenBlack,
+    content: @Composable () -> Unit
+) {
+    val context = LocalContext.current
+    val loader = gifEnabledLoader ?: ImageLoader.Builder(context)
+        .components {
+            if (SDK_INT >= 28) {
+                add(ImageDecoderDecoder.Factory())
+            } else {
+                add(GifDecoder.Factory())
+            }
+        }.build()
+
+    Box(
+        modifier = modifier
+            .fillMaxSize()
+            .background(backgroundColor),
+        contentAlignment = Alignment.Center
+    ) {
+        Column(
+            horizontalAlignment = Alignment.CenterHorizontally,
+            verticalArrangement = Arrangement.spacedBy(16.dp)
+        ) {
+            AsyncImage(
+                imageLoader = loader,
+                model = imageModel,
+                contentDescription = "Decorative globe animation",
+                modifier = Modifier
+                    .size(imageSize)
+                    .aspectRatio(1f),
+                colorFilter = ColorFilter.tint(primaryColor.copy(alpha = globeAlpha))
+            )
+            content()
+        }
+    }
+}
+
+/**
  * A variant of GlobeBackground that displays only the globe without text,
- * useful as a pure background layer.
+ * useful as a pure background layer with content overlaid on top.
  *
  * @param modifier Modifier to be applied to the background
  * @param imageSize Size of the globe animation
  * @param gifEnabledLoader Optional custom ImageLoader for GIF support
+ * @param imageModel The image model to load (default: globe wireframe)
  * @param primaryColor Primary color for the globe tint
+ * @param globeAlpha Alpha value for the globe color filter
  * @param backgroundColor Background color
  * @param content Content to overlay on top of the globe background
  */
@@ -123,7 +184,9 @@ fun GlobeBackgroundOnly(
     modifier: Modifier = Modifier,
     imageSize: Dp = 400.dp,
     gifEnabledLoader: ImageLoader? = null,
+    imageModel: Any? = R.drawable.globe_wireframe,
     primaryColor: Color,
+    globeAlpha: Float = pulseOpacity,
     backgroundColor: Color = dgenBlack,
     content: @Composable () -> Unit = {}
 ) {
@@ -145,10 +208,10 @@ fun GlobeBackgroundOnly(
     ) {
         AsyncImage(
             imageLoader = loader,
-            model = R.drawable.globe_wireframe,
+            model = imageModel,
             contentDescription = null,
             modifier = Modifier.size(imageSize),
-            colorFilter = ColorFilter.tint(primaryColor.copy(pulseOpacity))
+            colorFilter = ColorFilter.tint(primaryColor.copy(alpha = globeAlpha))
         )
         content()
     }

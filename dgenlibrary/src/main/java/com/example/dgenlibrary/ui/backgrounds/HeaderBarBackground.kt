@@ -3,8 +3,10 @@ package com.example.dgenlibrary.ui.backgrounds
 import androidx.compose.foundation.background
 import androidx.compose.foundation.gestures.detectTapGestures
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.statusBarsPadding
 import androidx.compose.material3.Text
@@ -17,15 +19,14 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.example.dgenlibrary.ui.headers.HeaderBar
 import com.example.dgenlibrary.ui.theme.dgenBlack
+import com.example.dgenlibrary.ui.theme.dgenGreen
 import com.example.dgenlibrary.ui.theme.dgenOcean
 
 @Composable
 fun DgenHeaderBackground(
     modifier: Modifier = Modifier,
     title: String = "",
-    titleContent: @Composable (() -> Unit)? = null,
-    logoContent: @Composable (() -> Unit)? = null,
-    trailingText: String = "",
+    headerContent: @Composable (() -> Unit)? = null,
     primaryColor: Color = dgenOcean,
     focusManager: FocusManager? = null,
     onBackClick: () -> Unit,
@@ -36,7 +37,7 @@ fun DgenHeaderBackground(
             .fillMaxSize()
             .background(dgenBlack)
             .statusBarsPadding()
-            .padding(start = 12.dp, end = 12.dp, bottom = 24.dp)
+            .padding(start = 12.dp, end = 12.dp)
             .pointerInput(Unit) {
                 detectTapGestures(
                     onTap = {
@@ -45,17 +46,25 @@ fun DgenHeaderBackground(
                 )
             },
     ) {
-        HeaderBar(
-            text = if (titleContent != null) "" else title,
-            content = titleContent ?: {},
-            logoContent = if (titleContent == null) logoContent else null,
-            trailingText = if (titleContent == null) trailingText else "",
-            onClick = onBackClick,
-            modifier = Modifier.padding(horizontal = 12.dp),
-            primaryColor = primaryColor
-        )
+        if(headerContent != null){
+            HeaderBar(
+                content = headerContent,
+                onClick = onBackClick,
+                modifier = Modifier.padding(horizontal = 12.dp),
+                primaryColor = primaryColor
+            )
+        } else {
+            HeaderBar(
+                text = title,
+                onClick = onBackClick,
+                modifier = Modifier.padding(horizontal = 12.dp),
+                primaryColor = primaryColor
+            )
+        }
 
-        content()
+        Box(modifier = modifier.weight(1f).fillMaxWidth()) {
+            content()
+        }
     }
 }
 
@@ -63,13 +72,11 @@ fun DgenHeaderBackground(
 fun DgenHeaderGlobeBackground(
     modifier: Modifier = Modifier,
     title: String = "",
-    titleContent: @Composable (() -> Unit)? = null,
-    logoContent: @Composable (() -> Unit)? = null,
-    trailingText: String = "",
+    headerContent: @Composable (() -> Unit)? = null,
+    content: @Composable () -> Unit,
     primaryColor: Color = dgenOcean,
     focusManager: FocusManager? = null,
     onBackClick: () -> Unit,
-    content: @Composable () -> Unit
 ){
     LargeGlobeBackground(
         primaryColor = primaryColor,
@@ -78,7 +85,7 @@ fun DgenHeaderGlobeBackground(
             modifier = modifier
                 .fillMaxSize()
                 .statusBarsPadding()
-                .padding(start = 12.dp, end = 12.dp, bottom = 24.dp)
+                .padding(start = 12.dp, end = 12.dp)
                 .pointerInput(Unit) {
                     detectTapGestures(
                         onTap = {
@@ -87,17 +94,26 @@ fun DgenHeaderGlobeBackground(
                     )
                 },
         ) {
-            HeaderBar(
-                text = if (titleContent != null) "" else title,
-                content = titleContent ?: {},
-                logoContent = if (titleContent == null) logoContent else null,
-                trailingText = if (titleContent == null) trailingText else "",
-                onClick = onBackClick,
-                modifier = Modifier.padding(horizontal = 12.dp),
-                primaryColor = primaryColor
-            )
+            if(headerContent != null){
+                HeaderBar(
+                    content = headerContent,
+                    onClick = onBackClick,
+                    modifier = Modifier.padding(horizontal = 12.dp),
+                    primaryColor = primaryColor
+                )
+            } else {
+                HeaderBar(
+                    text = title,
+                    onClick = onBackClick,
+                    modifier = Modifier.padding(horizontal = 12.dp),
+                    primaryColor = primaryColor
+                )
+            }
 
-            content()
+
+            Box(modifier = modifier.weight(1f).fillMaxWidth()) {
+                content()
+            }
         }
     }
 }
@@ -127,16 +143,18 @@ private fun DgenHeaderBackgroundPreview() {
 private fun DgenHeaderGlobeBackgroundPreview() {
     DgenHeaderGlobeBackground(
         title = "Header",
-        onBackClick = {}
-    ) {
-        Column(
-            modifier = Modifier
-                .fillMaxSize()
-                .padding(12.dp),
-            verticalArrangement = Arrangement.spacedBy(8.dp)
-        ) {
-            Text(text = "Content goes here", color = Color.White)
-            Text(text = "More content below the header", color = Color.White)
+        primaryColor = dgenGreen,
+        onBackClick = {},
+        content = {
+            Column(
+                modifier = Modifier
+                    .fillMaxSize()
+                    .padding(12.dp),
+                verticalArrangement = Arrangement.spacedBy(8.dp)
+            ) {
+                Text(text = "Content goes here", color = Color.White)
+                Text(text = "More content below the header", color = Color.White)
+            }
         }
-    }
+    )
 }

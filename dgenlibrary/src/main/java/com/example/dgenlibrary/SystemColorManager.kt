@@ -152,4 +152,31 @@ object SystemColorManager {
         primaryColor = primary
         secondaryColor = secondary
     }
+
+    /**
+     * Returns the appropriate placeholder token drawable resource based on the current primary color.
+     * Each theme has its own styled placeholder icon.
+     */
+    fun getPlaceholderTokenDrawable(): Int {
+        return getPlaceholderTokenDrawableForColor(primaryColor)
+    }
+
+    /**
+     * Returns the appropriate placeholder token drawable resource based on the given color.
+     * - Lazer (red): placeholder_token_lazer
+     * - Ocean (cyan): placeholder_token_ocean
+     * - Orche (orange): placeholder_token_orche
+     * - Gunmetal (gray): placeholder_token_gunmetal
+     * - Terminal (green): placeholder_token_terminal
+     */
+    fun getPlaceholderTokenDrawableForColor(color: Color): Int {
+        return when (color) {
+            lazerCore -> R.drawable.placeholder_token_lazer
+            oceanCore -> R.drawable.placeholder_token_ocean
+            orcheCore -> R.drawable.placeholder_token_orche
+            gunMetalCore -> R.drawable.placeholder_token_gunmetal
+            terminalCore -> R.drawable.placeholder_token_terminal
+            else -> R.drawable.placeholder_token_lazer
+        }
+    }
 } 

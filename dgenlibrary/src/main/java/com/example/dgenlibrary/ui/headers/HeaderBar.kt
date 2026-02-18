@@ -55,9 +55,7 @@ fun HeaderBar(
     modifier: Modifier = Modifier,
     text: String = "",
     enableCancel: Boolean = true,
-    content: @Composable () -> Unit = {},
-    logoContent: @Composable (() -> Unit)? = null,
-    trailingText: String = "",
+    content: @Composable (() -> Unit)? = null,
     primaryColor: Color,
     onClick: () -> Unit = {}
 ) {
@@ -75,45 +73,12 @@ fun HeaderBar(
         horizontalArrangement = Arrangement.SpaceBetween
     ) {
         when {
-            // Logo mode: show text + logo + optional trailing text
-            logoContent != null -> {
+            content != null -> {
                 Row(
                     verticalAlignment = Alignment.CenterVertically,
                     horizontalArrangement = Arrangement.spacedBy(8.dp),
                     modifier = Modifier.weight(1f, fill = false)
                 ) {
-                    if (text.isNotEmpty()) {
-                        Text(
-                            text = text.uppercase(),
-                            style = TextStyle(
-                                fontFamily = SpaceMono,
-                                color = primaryColor,
-                                fontWeight = FontWeight.Medium,
-                                fontSize = 24.sp,
-                                letterSpacing = 0.sp,
-                                textDecoration = TextDecoration.None
-                            )
-                        )
-                    }
-                    logoContent()
-                    if (trailingText.isNotEmpty()) {
-                        Text(
-                            text = trailingText.uppercase(),
-                            style = TextStyle(
-                                fontFamily = SpaceMono,
-                                color = primaryColor,
-                                fontWeight = FontWeight.Medium,
-                                fontSize = 24.sp,
-                                letterSpacing = 0.sp,
-                                textDecoration = TextDecoration.None
-                            )
-                        )
-                    }
-                }
-            }
-            // Custom content mode: use content slot
-            text.isEmpty() -> {
-                Box(modifier = Modifier.weight(1f, fill = false)) {
                     content()
                 }
             }
@@ -139,7 +104,7 @@ fun HeaderBar(
         AnimatedVisibility(
             modifier = Modifier.size(56.dp),
             visible = enableCancel,
-            enter = fadeIn(tween(mediumEnterDuration)),
+            enter = fadeIn(tween(com.example.dgenlibrary.ui.theme.mediumEnterDuration)),
             exit = fadeOut(tween(mediumExitDuration))
         ) {
             IconButton(
@@ -159,7 +124,7 @@ fun HeaderBar(
                         modifier = Modifier
                             .size(32.dp)
                             .align(Alignment.CenterEnd),
-                        painter = painterResource(R.drawable.close),
+                        painter = painterResource(R.drawable.baseline_close_24),
                         contentDescription = "Close",
                         tint = primaryColor
                     )

@@ -7,6 +7,8 @@ import androidx.compose.ui.unit.sp
 val IconSize = 24.0.dp
 val IconButtonSize = 60.0.dp
 
+val DgenBackgroundHorizontalPadding = 12.dp
+
 
 val smalllabel_fontSize = 14.sp
 val tag_fontSize = 12.sp

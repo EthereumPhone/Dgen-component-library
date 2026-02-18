@@ -16,7 +16,6 @@ import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
-import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Icon
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -40,6 +39,7 @@ import androidx.compose.ui.unit.TextUnit
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import android.util.Log
+import androidx.compose.foundation.shape.CircleShape
 import coil.ImageLoader
 import coil.compose.AsyncImage
 import coil.decode.GifDecoder
@@ -47,8 +47,6 @@ import coil.decode.ImageDecoderDecoder
 import coil.request.ImageRequest
 import com.example.dgenlibrary.ui.theme.PitagonsSans
 import com.example.dgenlibrary.ui.theme.SpaceMono
-import com.example.dgenlibrary.ui.theme.dgenOcean
-import com.example.dgenlibrary.ui.theme.dgenTurqoise
 import com.example.dgenlibrary.ui.theme.dgenWhite
 import com.example.dgenlibrary.util.TokenLogoFallback
 import com.example.dgenlibrary.util.formatWithSuffix
@@ -140,7 +138,7 @@ fun IdleView(
                                     .padding(bottom = 2.dp)
                                     .height(48.dp)
                                     .width(46.dp)
-                                    .clip(RoundedCornerShape(95)),
+                                    .clip(CircleShape),
                                 contentScale = ContentScale.Crop,
                                 painter = painterResource(R.drawable.ethereum_placeholder),
                                 contentDescription = "Ethereum"
@@ -158,27 +156,25 @@ fun IdleView(
                                             }
                                             .padding(bottom = 2.dp)
                                             .height(48.dp)
-                                            .width(46.dp)
-                                            .clip(RoundedCornerShape(95)),
+                                            .clip(CircleShape),
                                         contentScale = ContentScale.Crop,
                                         painter = painterResource(fallbackLogo.resourceId),
                                         contentDescription = tokenName
                                     )
                                 }
                                 else -> {
-                                    // Default placeholder if no fallback exists
+                                    // Default placeholder if no fallback exists - use themed placeholder
+                                    val placeholderDrawable = SystemColorManager.getPlaceholderTokenDrawableForColor(primaryColor)
                                     Image(
                                         modifier = Modifier
                                             .graphicsLayer {
                                                 rotationX = 5f
                                             }
                                             .padding(bottom = 2.dp)
-                                            .height(48.dp)
-                                            .width(46.dp)
-                                            .clip(RoundedCornerShape(95)),
+                                            .size(48.dp)
+                                            .clip(CircleShape),
                                         contentScale = ContentScale.Crop,
-                                        painter = painterResource(R.drawable.placeholer_icon_5),
-                                        colorFilter = ColorFilter.tint(primaryColor),
+                                        painter = painterResource(placeholderDrawable),
                                         contentDescription = "Token placeholder"
                                     )
                                 }
@@ -186,17 +182,16 @@ fun IdleView(
                         }
                         // Handle URL icons (either from API or fallback)
                         else -> {
-                            val shouldTint = effectiveIcon.isEmpty()
-                            
                             Log.d("IdleCardView", "Loading image URL: $effectiveIcon")
+                            
+                            // Use themed placeholder based on primary color
+                            val placeholderDrawable = SystemColorManager.getPlaceholderTokenDrawableForColor(primaryColor)
 
-                            // AsyncImage will automatically use the ImageLoader from ImageLoaderFactory
                             AsyncImage(
                                 modifier = Modifier
                                     .padding(bottom = 2.dp)
-                                    .height(48.dp)
-                                    .width(46.dp)
-                                    .clip(RoundedCornerShape(95)),
+                                    .size(48.dp)
+                                    .clip(CircleShape),
                                 contentScale = ContentScale.Crop,
                                 model = ImageRequest.Builder(context)
                                     .data(effectiveIcon)
@@ -211,9 +206,8 @@ fun IdleView(
                                     )
                                     .build(),
                                 contentDescription = tokenName,
-                                placeholder = painterResource(R.drawable.placeholer_icon_5),
-                                error = painterResource(R.drawable.placeholer_icon_5),
-                                colorFilter = if (shouldTint) ColorFilter.tint(primaryColor) else null
+                                placeholder = painterResource(placeholderDrawable),
+                                error = painterResource(placeholderDrawable)
                             )
                         }
                     }
