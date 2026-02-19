@@ -150,7 +150,7 @@ fun TransactionStatusOverlay(
             backgroundColor = dgenBlack
         ) {
             AnimatedContent(
-                modifier = Modifier.offset(y = (-54).dp),
+                modifier = Modifier.offset(y = (-40).dp),
                 targetState = currentStatus,
                 transitionSpec = {
                     fadeIn(animationSpec = tween(extraLargeEnterDuration)) togetherWith
