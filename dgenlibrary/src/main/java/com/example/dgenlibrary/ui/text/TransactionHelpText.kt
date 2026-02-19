@@ -28,7 +28,10 @@ val defaultTransactionHelpRules = listOf(
     "insufficient funds" to "Add more funds to your wallet",
     "paymaster" to "Sponsorship service unavailable. Try again later",
     "account not deployed" to "Your account needs to be activated first",
-    "throttled" to "Too many requests. Please wait and try again"
+    "throttled" to "Too many requests. Please wait and try again",
+    "slippage" to "Price moved too much. Try increasing slippage tolerance",
+    "liquidity" to "Not enough liquidity for this swap",
+    "cross-chain" to "Cross-chain swaps require bridge integration"
 )
 
 /**
