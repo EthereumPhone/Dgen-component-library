@@ -1,4 +1,4 @@
-package org.ethosmobile.contacts.ui.components
+package com.example.dgenlibrary.util
 
 import android.content.ClipData
 import android.content.ClipboardManager

@@ -77,9 +77,9 @@ import com.example.dgenlibrary.ui.theme.dgenTurqoise
 import com.example.dgenlibrary.ui.theme.dgenWhite
 import com.example.dgenlibrary.ui.theme.mediumEnterDuration
 import com.example.dgenlibrary.ui.theme.mediumExitDuration
-import org.ethosmobile.contacts.ui.components.CustomTextSelectionMenuContent
-import org.ethosmobile.contacts.ui.components.CustomTextToolbar
-import org.ethosmobile.contacts.ui.components.CustomTextToolbarState
+import com.example.dgenlibrary.util.CustomTextSelectionMenuContent
+import com.example.dgenlibrary.util.CustomTextToolbar
+import com.example.dgenlibrary.util.CustomTextToolbarState
 
 /**
  * A reusable search row with animated background, search icon and an animated clear button.
