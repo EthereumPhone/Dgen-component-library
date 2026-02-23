@@ -1,23 +1,22 @@
 package com.example.dgenlibrary.components
 
-import androidx.compose.foundation.background
-import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
-import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.ArrowBack
+import androidx.compose.material.icons.filled.Check
 import androidx.compose.material.icons.filled.Edit
 import androidx.compose.material.icons.filled.ExitToApp
 import androidx.compose.material.icons.filled.PersonAdd
@@ -38,20 +37,25 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.input.TextFieldValue
+import androidx.compose.ui.text.style.TextDecoration
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.dgenlibrary.model.GroupMember
+import com.example.dgenlibrary.ui.backgrounds.DgenNavigationBackground
+import com.example.dgenlibrary.ui.backgrounds.FadeDirection
+import com.example.dgenlibrary.ui.backgrounds.FadeEdge
 import com.example.dgenlibrary.ui.theme.PitagonsSans
 import com.example.dgenlibrary.ui.theme.SpaceMono
 import com.example.dgenlibrary.ui.theme.dgenBlack
 import com.example.dgenlibrary.ui.theme.dgenRed
 import com.example.dgenlibrary.ui.theme.dgenTurqoise
+import com.example.dgenlibrary.ui.theme.label_fontSize
 
 @Composable
 fun GroupDetailsSheet(
@@ -68,228 +72,288 @@ fun GroupDetailsSheet(
     onLeaveGroup: () -> Unit,
     modifier: Modifier = Modifier
 ) {
-    var showEditNameDialog by remember { mutableStateOf(false) }
-    var showEditDescriptionDialog by remember { mutableStateOf(false) }
+    var isEditMode by remember { mutableStateOf(false) }
     var showLeaveConfirmDialog by remember { mutableStateOf(false) }
     var showRemoveMemberDialog by remember { mutableStateOf<GroupMember?>(null) }
 
-    Column(
-        modifier = modifier
-            .fillMaxSize()
-            .background(dgenBlack)
-    ) {
-        // Header
-        Row(
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(16.dp),
-            verticalAlignment = Alignment.CenterVertically
-        ) {
-            IconButton(onClick = onBackClick) {
+    var editNameState by remember(isEditMode) {
+        mutableStateOf(TextFieldValue(groupName))
+    }
+    var editDescriptionState by remember(isEditMode) {
+        mutableStateOf(TextFieldValue(groupDescription ?: ""))
+    }
+
+    val scrollState = rememberScrollState()
+
+    DgenNavigationBackground(
+        modifier = modifier,
+        primaryColor = primaryColor,
+        onBackClick = onBackClick,
+        headerContent = {
+            Text(
+                text = "GROUP DETAILS",
+                style = TextStyle(
+                    fontFamily = SpaceMono,
+                    color = primaryColor,
+                    fontWeight = FontWeight.Medium,
+                    fontSize = 24.sp,
+                    letterSpacing = 0.sp,
+                    textDecoration = TextDecoration.None
+                ),
+                maxLines = 1,
+                overflow = TextOverflow.Ellipsis
+            )
+
+            IconButton(onClick = {
+                if (isEditMode) {
+                    onUpdateGroupName(editNameState.text.trim())
+                    onUpdateGroupDescription(editDescriptionState.text.trim())
+                }
+                isEditMode = !isEditMode
+            }) {
                 Icon(
-                    imageVector = Icons.Default.ArrowBack,
-                    contentDescription = "Back",
-                    tint = primaryColor
+                    imageVector = if (isEditMode) Icons.Default.Check else Icons.Default.Edit,
+                    contentDescription = if (isEditMode) "Save" else "Edit",
+                    tint = if (isEditMode) primaryColor else primaryColor.copy(alpha = 0.6f)
                 )
             }
-
-            Text(
-                text = "Group Details",
-                style = TextStyle(
-                    fontFamily = PitagonsSans,
-                    color = primaryColor,
-                    fontWeight = FontWeight.SemiBold,
-                    fontSize = 20.sp
-                ),
-                modifier = Modifier.padding(start = 8.dp)
-            )
         }
-
-        // Group Info Section
+    ) {
         Column(
             modifier = Modifier
                 .fillMaxWidth()
-                .padding(horizontal = 16.dp)
+                .verticalScroll(scrollState)
+                .padding(top = 24.dp, bottom = 24.dp),
+            verticalArrangement = Arrangement.spacedBy(16.dp)
         ) {
-            // Group Name
-            Row(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .clickable { showEditNameDialog = true }
-                    .padding(vertical = 12.dp),
-                verticalAlignment = Alignment.CenterVertically,
-                horizontalArrangement = Arrangement.SpaceBetween
+            if (isEditMode) {
+                Column(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(horizontal = 8.dp),
+                    verticalArrangement = Arrangement.spacedBy(16.dp)
+                ) {
+                    Column(verticalArrangement = Arrangement.spacedBy(6.dp)) {
+                        Text(
+                            text = "GROUP NAME",
+                            style = TextStyle(
+                                fontFamily = SpaceMono,
+                                color = primaryColor,
+                                fontWeight = FontWeight.SemiBold,
+                                fontSize = label_fontSize
+                            )
+                        )
+                        OutlinedTextField(
+                            value = editNameState.text,
+                            onValueChange = {
+                                editNameState = TextFieldValue(it)
+                            },
+                            modifier = Modifier.fillMaxWidth(),
+                            textStyle = TextStyle(
+                                fontFamily = PitagonsSans,
+                                color = primaryColor,
+                                fontSize = 16.sp
+                            ),
+                            colors = OutlinedTextFieldDefaults.colors(
+                                focusedBorderColor = primaryColor,
+                                unfocusedBorderColor = primaryColor.copy(alpha = 0.3f),
+                                cursorColor = primaryColor
+                            ),
+                            singleLine = true
+                        )
+                    }
+
+                    Column(verticalArrangement = Arrangement.spacedBy(6.dp)) {
+                        Text(
+                            text = "DESCRIPTION",
+                            style = TextStyle(
+                                fontFamily = SpaceMono,
+                                color = primaryColor,
+                                fontWeight = FontWeight.SemiBold,
+                                fontSize = label_fontSize
+                            )
+                        )
+                        OutlinedTextField(
+                            value = editDescriptionState.text,
+                            onValueChange = {
+                                editDescriptionState = TextFieldValue(it)
+                            },
+                            modifier = Modifier.fillMaxWidth(),
+                            textStyle = TextStyle(
+                                fontFamily = PitagonsSans,
+                                color = primaryColor,
+                                fontSize = 14.sp
+                            ),
+                            colors = OutlinedTextFieldDefaults.colors(
+                                focusedBorderColor = primaryColor,
+                                unfocusedBorderColor = primaryColor.copy(alpha = 0.3f),
+                                cursorColor = primaryColor
+                            ),
+                            maxLines = 4
+                        )
+                    }
+                }
+            } else {
+                Column(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(horizontal = 8.dp)
+                ) {
+                    Column(modifier = Modifier.padding(vertical = 12.dp)) {
+                        Text(
+                            text = "GROUP NAME",
+                            style = TextStyle(
+                                fontFamily = SpaceMono,
+                                color = primaryColor.copy(alpha = 0.6f),
+                                fontWeight = FontWeight.SemiBold,
+                                fontSize = label_fontSize
+                            )
+                        )
+                        Text(
+                            text = groupName.ifBlank { "Unnamed Group" },
+                            style = TextStyle(
+                                fontFamily = PitagonsSans,
+                                color = primaryColor,
+                                fontWeight = FontWeight.Medium,
+                                fontSize = 16.sp
+                            ),
+                            maxLines = 1,
+                            overflow = TextOverflow.Ellipsis
+                        )
+                    }
+
+                    Spacer(modifier = Modifier.height(8.dp))
+
+                    Column(modifier = Modifier.padding(vertical = 12.dp)) {
+                        Text(
+                            text = "DESCRIPTION",
+                            style = TextStyle(
+                                fontFamily = SpaceMono,
+                                color = primaryColor.copy(alpha = 0.6f),
+                                fontWeight = FontWeight.SemiBold,
+                                fontSize = label_fontSize
+                            )
+                        )
+                        Text(
+                            text = groupDescription?.takeIf { it.isNotBlank() }
+                                ?: "No description",
+                            style = TextStyle(
+                                fontFamily = PitagonsSans,
+                                color = if (groupDescription.isNullOrBlank())
+                                    primaryColor.copy(alpha = 0.4f) else primaryColor,
+                                fontWeight = FontWeight.Normal,
+                                fontSize = 14.sp
+                            ),
+                            maxLines = 2,
+                            overflow = TextOverflow.Ellipsis
+                        )
+                    }
+                }
+            }
+
+            Column(
+                modifier = Modifier.padding(horizontal = 8.dp),
+                verticalArrangement = Arrangement.spacedBy(8.dp)
             ) {
-                Column(modifier = Modifier.weight(1f)) {
+                Row(
+                    modifier = Modifier.fillMaxWidth(),
+                    verticalAlignment = Alignment.CenterVertically,
+                    horizontalArrangement = Arrangement.SpaceBetween
+                ) {
                     Text(
-                        text = "Group Name",
+                        text = "MEMBERS ${members.size}",
                         style = TextStyle(
                             fontFamily = SpaceMono,
-                            color = primaryColor.copy(alpha = 0.6f),
-                            fontSize = 12.sp
-                        )
-                    )
-                    Text(
-                        text = groupName.ifBlank { "Unnamed Group" },
-                        style = TextStyle(
-                            fontFamily = PitagonsSans,
                             color = primaryColor,
-                            fontWeight = FontWeight.Medium,
-                            fontSize = 16.sp
-                        ),
-                        maxLines = 1,
-                        overflow = TextOverflow.Ellipsis
-                    )
-                }
-                Icon(
-                    imageVector = Icons.Default.Edit,
-                    contentDescription = "Edit name",
-                    tint = primaryColor.copy(alpha = 0.6f),
-                    modifier = Modifier.size(20.dp)
-                )
-            }
-
-            Spacer(modifier = Modifier.height(8.dp))
-
-            // Group Description
-            Row(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .clickable { showEditDescriptionDialog = true }
-                    .padding(vertical = 12.dp),
-                verticalAlignment = Alignment.CenterVertically,
-                horizontalArrangement = Arrangement.SpaceBetween
-            ) {
-                Column(modifier = Modifier.weight(1f)) {
-                    Text(
-                        text = "Description",
-                        style = TextStyle(
-                            fontFamily = SpaceMono,
-                            color = primaryColor.copy(alpha = 0.6f),
-                            fontSize = 12.sp
+                            fontWeight = FontWeight.SemiBold,
+                            fontSize = 16.sp,
+                            lineHeight = 16.sp,
+                            letterSpacing = 0.sp,
+                            textDecoration = TextDecoration.None
                         )
                     )
-                    Text(
-                        text = groupDescription?.takeIf { it.isNotBlank() } ?: "No description",
-                        style = TextStyle(
-                            fontFamily = PitagonsSans,
-                            color = if (groupDescription.isNullOrBlank()) primaryColor.copy(alpha = 0.4f) else primaryColor,
-                            fontWeight = FontWeight.Normal,
-                            fontSize = 14.sp
-                        ),
-                        maxLines = 2,
-                        overflow = TextOverflow.Ellipsis
+
+                    IconButton(onClick = onAddMembers) {
+                        Icon(
+                            imageVector = Icons.Default.PersonAdd,
+                            contentDescription = "Add members",
+                            tint = primaryColor
+                        )
+                    }
+                }
+
+                Box(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .heightIn(max = 300.dp)
+                ) {
+                    LazyColumn(
+                        modifier = Modifier.fillMaxWidth()
+                    ) {
+                        items(members) { member ->
+                            MemberItem(
+                                header = member.displayName,
+                                subheader = member.subtitle ?: "",
+                                onDelete = { showRemoveMemberDialog = member },
+                                primaryColor = primaryColor,
+                                actionButton = if (isEditMode) {
+                                    {
+                                        IconButton(
+                                            onClick = { showRemoveMemberDialog = member },
+                                            modifier = Modifier.size(32.dp)
+                                        ) {
+                                            Icon(
+                                                imageVector = Icons.Default.PersonRemove,
+                                                contentDescription = "Remove member",
+                                                tint = dgenRed.copy(alpha = 0.7f),
+                                                modifier = Modifier.size(18.dp)
+                                            )
+                                        }
+                                    }
+                                } else null
+                            )
+                        }
+                    }
+
+                    FadeEdge(
+                        FadeDirection.Top,
+                        Modifier.align(Alignment.TopCenter),
+                        size = 8.dp
+                    )
+                    FadeEdge(
+                        FadeDirection.Bottom,
+                        Modifier.align(Alignment.BottomCenter),
+                        size = 8.dp
                     )
                 }
+            }
+
+            Button(
+                onClick = { showLeaveConfirmDialog = true },
+                colors = ButtonDefaults.buttonColors(
+                    containerColor = dgenRed.copy(alpha = 0.2f),
+                    contentColor = dgenRed
+                ),
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(horizontal = 8.dp)
+            ) {
                 Icon(
-                    imageVector = Icons.Default.Edit,
-                    contentDescription = "Edit description",
-                    tint = primaryColor.copy(alpha = 0.6f),
+                    imageVector = Icons.Default.ExitToApp,
+                    contentDescription = null,
                     modifier = Modifier.size(20.dp)
                 )
-            }
-        }
-
-        Spacer(modifier = Modifier.height(16.dp))
-
-        // Members Section Header
-        Row(
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(horizontal = 16.dp),
-            verticalAlignment = Alignment.CenterVertically,
-            horizontalArrangement = Arrangement.SpaceBetween
-        ) {
-            Text(
-                text = "MEMBERS (${members.size})",
-                style = TextStyle(
-                    fontFamily = SpaceMono,
-                    color = primaryColor.copy(alpha = 0.6f),
-                    fontWeight = FontWeight.Bold,
-                    fontSize = 12.sp,
-                    letterSpacing = 1.sp
-                )
-            )
-
-            IconButton(onClick = onAddMembers) {
-                Icon(
-                    imageVector = Icons.Default.PersonAdd,
-                    contentDescription = "Add members",
-                    tint = primaryColor
+                Spacer(modifier = Modifier.width(8.dp))
+                Text(
+                    text = "Leave Group",
+                    style = TextStyle(
+                        fontFamily = SpaceMono,
+                        fontWeight = FontWeight.Bold,
+                        fontSize = 14.sp
+                    )
                 )
             }
         }
-
-        // Members List
-        LazyColumn(
-            modifier = Modifier
-                .fillMaxWidth()
-                .weight(1f)
-                .padding(horizontal = 16.dp)
-        ) {
-            items(members) { member ->
-                GroupMemberItem(
-                    member = member,
-                    primaryColor = primaryColor,
-                    onRemoveClick = { showRemoveMemberDialog = member }
-                )
-            }
-        }
-
-        // Leave Group Button
-        Button(
-            onClick = { showLeaveConfirmDialog = true },
-            colors = ButtonDefaults.buttonColors(
-                containerColor = dgenRed.copy(alpha = 0.2f),
-                contentColor = dgenRed
-            ),
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(16.dp)
-        ) {
-            Icon(
-                imageVector = Icons.Default.ExitToApp,
-                contentDescription = null,
-                modifier = Modifier.size(20.dp)
-            )
-            Spacer(modifier = Modifier.width(8.dp))
-            Text(
-                text = "Leave Group",
-                style = TextStyle(
-                    fontFamily = SpaceMono,
-                    fontWeight = FontWeight.Bold,
-                    fontSize = 14.sp
-                )
-            )
-        }
-    }
-
-    // Edit Name Dialog
-    if (showEditNameDialog) {
-        EditTextDialog(
-            title = "Edit Group Name",
-            initialValue = groupName,
-            primaryColor = primaryColor,
-            onDismiss = { showEditNameDialog = false },
-            onConfirm = { newName ->
-                onUpdateGroupName(newName)
-                showEditNameDialog = false
-            }
-        )
-    }
-
-    // Edit Description Dialog
-    if (showEditDescriptionDialog) {
-        EditTextDialog(
-            title = "Edit Description",
-            initialValue = groupDescription ?: "",
-            primaryColor = primaryColor,
-            onDismiss = { showEditDescriptionDialog = false },
-            onConfirm = { newDescription ->
-                onUpdateGroupDescription(newDescription)
-                showEditDescriptionDialog = false
-            }
-        )
     }
 
     // Leave Group Confirmation Dialog
@@ -400,79 +464,6 @@ fun GroupDetailsSheet(
 }
 
 @Composable
-fun GroupMemberItem(
-    member: GroupMember,
-    primaryColor: Color,
-    onRemoveClick: () -> Unit,
-    modifier: Modifier = Modifier
-) {
-    Row(
-        modifier = modifier
-            .fillMaxWidth()
-            .padding(vertical = 8.dp),
-        verticalAlignment = Alignment.CenterVertically
-    ) {
-        Box(
-            modifier = Modifier
-                .size(40.dp)
-                .clip(CircleShape)
-                .background(primaryColor.copy(alpha = 0.2f)),
-            contentAlignment = Alignment.Center
-        ) {
-            Text(
-                text = (member.displayName.firstOrNull() ?: '?').uppercase(),
-                style = TextStyle(
-                    fontFamily = PitagonsSans,
-                    color = primaryColor,
-                    fontWeight = FontWeight.Bold,
-                    fontSize = 16.sp
-                )
-            )
-        }
-
-        Spacer(modifier = Modifier.width(12.dp))
-
-        Column(modifier = Modifier.weight(1f)) {
-            Text(
-                text = member.displayName,
-                style = TextStyle(
-                    fontFamily = PitagonsSans,
-                    color = primaryColor,
-                    fontWeight = FontWeight.Medium,
-                    fontSize = 14.sp
-                ),
-                maxLines = 1,
-                overflow = TextOverflow.Ellipsis
-            )
-            if (member.subtitle != null) {
-                Text(
-                    text = member.subtitle,
-                    style = TextStyle(
-                        fontFamily = SpaceMono,
-                        color = primaryColor.copy(alpha = 0.5f),
-                        fontSize = 11.sp
-                    ),
-                    maxLines = 1,
-                    overflow = TextOverflow.Ellipsis
-                )
-            }
-        }
-
-        IconButton(
-            onClick = onRemoveClick,
-            modifier = Modifier.size(32.dp)
-        ) {
-            Icon(
-                imageVector = Icons.Default.PersonRemove,
-                contentDescription = "Remove member",
-                tint = dgenRed.copy(alpha = 0.7f),
-                modifier = Modifier.size(18.dp)
-            )
-        }
-    }
-}
-
-@Composable
 fun EditTextDialog(
     title: String,
     initialValue: String,
@@ -558,17 +549,6 @@ fun PreviewGroupDetailsSheet() {
         onAddMembers = {},
         onRemoveMember = {},
         onLeaveGroup = {}
-    )
-}
-
-@Preview(showBackground = true, backgroundColor = 0xFF050505)
-@Composable
-fun PreviewGroupMemberItem() {
-    GroupMemberItem(
-        member = GroupMember(id = "user1", displayName = "Alice", subtitle = "0x1234...5678"),
-        primaryColor = dgenTurqoise,
-        onRemoveClick = {},
-        modifier = Modifier.padding(horizontal = 16.dp)
     )
 }
 

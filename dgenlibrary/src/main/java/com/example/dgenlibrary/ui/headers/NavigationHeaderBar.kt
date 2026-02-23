@@ -4,6 +4,7 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.material3.Icon
@@ -73,7 +74,7 @@ fun NavigationHeaderBar(
             }
         ) {
             Icon(
-                modifier = Modifier.size(24.dp),
+                modifier = Modifier.offset(x = (-8.dp)).size(24.dp),
                 painter = painterResource(R.drawable.back_icon),
                 contentDescription = "Back",
                 tint = primaryColor
