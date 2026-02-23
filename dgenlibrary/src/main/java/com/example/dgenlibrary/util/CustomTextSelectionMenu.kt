@@ -28,9 +28,6 @@ import androidx.compose.ui.window.PopupProperties
 import com.example.dgenlibrary.SystemColorManager
 import com.example.dgenlibrary.ui.theme.DgenTheme
 import com.example.dgenlibrary.ui.theme.dgenTurqoise
-import org.ethereumphone.dgenlibrary.SystemColorManager
-import org.ethereumphone.dgenlibrary.theme.DgenTheme
-import org.ethereumphone.dgenlibrary.theme.dgenTurqoise
 
 /**
  * State holder for custom text toolbar
