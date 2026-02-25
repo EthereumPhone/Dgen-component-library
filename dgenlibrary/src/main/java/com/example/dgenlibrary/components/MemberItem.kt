@@ -25,11 +25,11 @@ import androidx.compose.ui.unit.sp
 import com.example.dgenlibrary.ui.theme.PitagonsSans
 import com.example.dgenlibrary.ui.theme.dgenRed
 import com.example.dgenlibrary.ui.theme.dgenTurqoise
+import com.example.dgenlibrary.ui.theme.dgenWhite
 
 @Composable
 fun MemberItem(
     modifier: Modifier = Modifier,
-    onDelete: () -> Unit,
     header: String,
     subheader: String = "",
     primaryColor: Color = dgenTurqoise,
@@ -64,7 +64,7 @@ fun MemberItem(
                     maxLines = 1,
                     style = TextStyle(
                         fontFamily = PitagonsSans,
-                        color = primaryColor.copy(0.45f),
+                        color = dgenWhite,
                         fontWeight = FontWeight.SemiBold,
                         fontSize = 16.sp,
                         lineHeight = 16.sp,
@@ -85,7 +85,6 @@ fun MemberItem(
 @Composable
 private fun MemberItemPreview() {
     MemberItem(
-        onDelete = {},
         header = "alice.eth",
         subheader = "0x1234...abcd",
         primaryColor = dgenTurqoise,
@@ -97,7 +96,6 @@ private fun MemberItemPreview() {
 @Composable
 private fun MemberItemHeaderOnlyPreview() {
     MemberItem(
-        onDelete = {},
         header = "0x1234ab...5678ef",
         primaryColor = dgenTurqoise,
         modifier = Modifier.padding(horizontal = 16.dp)
@@ -108,7 +106,6 @@ private fun MemberItemHeaderOnlyPreview() {
 @Composable
 private fun MemberItemWithActionButtonPreview() {
     MemberItem(
-        onDelete = {},
         header = "Bob",
         subheader = "bob.base.eth",
         primaryColor = dgenTurqoise,
@@ -138,7 +135,6 @@ private fun MemberItemWithActionButtonPreview() {
 @Composable
 private fun MemberItemDDevicePreview() {
     MemberItem(
-        onDelete = {},
         header = "charlie.base.eth",
         subheader = "0x9876...5432",
         primaryColor = dgenTurqoise,
