@@ -24,6 +24,8 @@ import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextDecoration
+import androidx.compose.ui.hapticfeedback.HapticFeedbackType
+import androidx.compose.ui.platform.LocalHapticFeedback
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.tooling.preview.Preview
@@ -47,6 +49,8 @@ fun ConfirmationOverlay(
     onCancel: () -> Unit,
     onConfirm: () -> Unit
 ) {
+    val hapticFeedback = LocalHapticFeedback.current
+
     AnimatedVisibility(
         visible = visible,
         enter = fadeIn(),
@@ -59,7 +63,10 @@ fun ConfirmationOverlay(
                 .fillMaxSize()
                 .background(dgenBlack)
                 .pointerInput(Unit) {
-                    detectTapGestures { onCancel() }
+                    detectTapGestures {
+                        hapticFeedback.performHapticFeedback(HapticFeedbackType.LongPress)
+                        onCancel()
+                    }
                 }
         )
 
@@ -104,7 +111,7 @@ fun ConfirmationOverlay(
                                 fontFamily = PitagonsSans,
                                 fontWeight = FontWeight.Normal,
                                 textAlign = TextAlign.Center,
-                                color = secondaryColor.copy(neonOpacity),
+                                color = primaryColor.copy(neonOpacity),
                                 lineHeight = 24.sp,
                                 letterSpacing = 0.sp,
                                 textDecoration = TextDecoration.None
@@ -124,7 +131,10 @@ fun ConfirmationOverlay(
                         text = cancelButtonText,
                         backgroundColor = primaryColor,
                         containerColor = secondaryColor,
-                        onClick = onCancel
+                        onClick = {
+                            hapticFeedback.performHapticFeedback(HapticFeedbackType.LongPress)
+                            onCancel()
+                        }
                     )
                     
                     Spacer(modifier = Modifier.width(24.dp))
@@ -132,7 +142,10 @@ fun ConfirmationOverlay(
                     DgenSecondaryButton(
                         text = confirmButtonText,
                         containerColor = primaryColor,
-                        onClick = onConfirm
+                        onClick = {
+                            hapticFeedback.performHapticFeedback(HapticFeedbackType.LongPress)
+                            onConfirm()
+                        }
                     )
                 }
             }
